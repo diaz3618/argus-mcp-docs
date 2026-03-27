@@ -16,6 +16,10 @@ export const Documents = [
                 title: 'Concepts',
                 href: '/concepts',
             },
+            {
+                title: 'Troubleshooting',
+                href: '/troubleshooting',
+            },
         ],
     },
     {
@@ -83,7 +87,7 @@ export const Documents = [
                 href: '/overview',
             },
             {
-                title: 'Built-in Plugins',
+                title: 'Middleware Reference',
                 href: '/built-in-plugins',
             },
         ],

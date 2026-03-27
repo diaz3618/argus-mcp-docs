@@ -69,7 +69,7 @@ If no container runtime is available, or the command has no recognized template 
 
 ### Per-Backend Container Options
 
-Individual backends can customize their container:
+Individual backends can customize their container using the nested `container` key:
 
 ```yaml
 backends:
@@ -77,11 +77,14 @@ backends:
     type: stdio
     command: npx
     args: ["-y", "my-mcp-server"]
-    container_isolation: true          # default: inherits global flag
-    builder_image: "node:22-alpine"    # override base image
-    system_deps: ["curl", "jq"]        # additional OS packages
-    additional_packages: []            # extra language-level packages
+    container:
+      enabled: true                    # default: inherits global flag
+      builder_image: "node:22-alpine"  # override base image
+      system_deps: ["curl", "jq"]      # additional OS packages
+      additional_packages: []          # extra language-level packages
 ```
+
+See [Container Isolation](/docs/configuration/container-isolation) for the full reference.
 
 ### Disabling Container Isolation
 
@@ -103,7 +106,8 @@ Or per-backend:
 ```yaml
 backends:
   my-backend:
-    container_isolation: false
+    container:
+      enabled: false
 ```
 
 ### Pre-Building Images

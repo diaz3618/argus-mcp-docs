@@ -3,6 +3,10 @@ title: "Config Sync"
 description: "Hot-reload and change detection for zero-downtime configuration updates in Argus MCP."
 ---
 
+<Note type="warning">
+The `sync:` configuration block shown below is **not yet wired** into the Argus config schema. The underlying `ConfigWatcher` works and is production-ready, but the YAML fields described here have no effect yet. Use `POST /manage/v1/reload` for manual hot-reload in the meantime.
+</Note>
+
 Config Sync watches the configuration file for changes and automatically reloads backends, middleware, and the tool catalog without restarting the server. This enables zero-downtime configuration updates.
 
 ## How It Works

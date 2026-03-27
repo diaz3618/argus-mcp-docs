@@ -9,7 +9,7 @@ All endpoints are relative to `/manage/v1/`.
 
 ## `GET /health`
 
-Liveness and readiness probe. **Always public** -- no token required.
+Liveness probe. **Always public** -- no token required.
 
 ### Response
 
@@ -40,6 +40,31 @@ Liveness and readiness probe. **Always public** -- no token required.
 - `healthy` -- all backends connected and healthy
 - `degraded` -- some backends unhealthy or disconnected
 - `unhealthy` -- no backends connected
+
+---
+
+## `GET /ready`
+
+Readiness probe. **Always public** -- no token required. Returns 503 until at least one backend is connected.
+
+### Response
+
+```json
+{
+  "ready": true,
+  "reason": "accepting traffic"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `ready` | boolean | `true` when backends are connected |
+| `reason` | string | Human-readable status reason |
+
+**Status codes:**
+
+- `200` -- ready (backends connected)
+- `503` -- not ready (no backends connected yet)
 
 ---
 
@@ -374,3 +399,245 @@ The server will:
 2. Complete in-flight requests
 3. Disconnect all backends
 4. Exit the process
+
+---
+
+## `POST /reauth/{name}`
+
+Trigger interactive re-authentication for a backend (useful for OAuth2/PKCE flows that require a browser).
+
+### Path Parameters
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `name` | string | Backend name (from config) |
+
+### Response
+
+```json
+{
+  "name": "my-server",
+  "reauth_initiated": true,
+  "error": null
+}
+```
+
+Returns 404 if the backend name is not found.
+
+---
+
+## `GET /batch`
+
+Combined response with status, backends, capabilities, and events in a single request. Reduces round-trips for dashboard-style consumers.
+
+### Query Parameters
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `events_limit` | int | 20 | Number of recent events to include (1--10000) |
+
+### Response
+
+```json
+{
+  "status": { },
+  "backends": { },
+  "capabilities": { },
+  "events": { }
+}
+```
+
+Each key contains the same shape as the corresponding standalone endpoint (`/status`, `/backends`, `/capabilities`, `/events`).
+
+---
+
+## `GET /registry/search`
+
+Search external MCP server registries.
+
+### Query Parameters
+
+| Param | Type | Required | Description |
+|-------|------|----------|-------------|
+| `q` | string | yes | Search query (max 255 chars) |
+| `limit` | int | no | Results per page (default 20, max 100) |
+| `registry` | string | no | Filter to a specific registry name |
+
+### Response
+
+```json
+{
+  "servers": [
+    {
+      "name": "example-server",
+      "description": "An example MCP server",
+      "transport": "stdio",
+      "url": "",
+      "command": "npx",
+      "args": ["-y", "example-server"],
+      "version": "1.0.0",
+      "categories": ["tools"]
+    }
+  ],
+  "registry": "official",
+  "total": 1
+}
+```
+
+Returns 404 if no registries are configured.
+
+---
+
+## `GET /skills`
+
+List all discovered skills and their status.
+
+### Response
+
+```json
+{
+  "skills": [
+    {
+      "name": "code-search",
+      "version": "1.0.0",
+      "description": "Search code across files",
+      "status": "enabled",
+      "tools": 3,
+      "workflows": 1,
+      "author": "argus"
+    }
+  ]
+}
+```
+
+---
+
+## `POST /skills/{name}/enable`
+
+Enable a skill by name. Activates its tools and workflows.
+
+### Path Parameters
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `name` | string | Skill name |
+
+### Response
+
+```json
+{
+  "name": "code-search",
+  "action": "enabled",
+  "ok": true
+}
+```
+
+Returns 404 if the skill is not found.
+
+---
+
+## `POST /skills/{name}/disable`
+
+Disable a skill by name. Deactivates its tools and workflows.
+
+### Path Parameters
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `name` | string | Skill name |
+
+### Response
+
+```json
+{
+  "name": "code-search",
+  "action": "disabled",
+  "ok": true
+}
+```
+
+Returns 404 if the skill is not found.
+
+---
+
+## `POST /tools/call`
+
+Proxy a tool call to the correct backend. The gateway routes by tool name using the capability route map.
+
+### Request Body
+
+```json
+{
+  "tool": "search_web",
+  "arguments": {
+    "query": "MCP protocol"
+  }
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `tool` | string | yes | Tool name |
+| `arguments` | object | yes | Tool arguments |
+
+### Response
+
+```json
+{
+  "tool": "search_web",
+  "backend": "browser-server",
+  "content": [
+    {
+      "type": "text",
+      "text": "Search results..."
+    }
+  ],
+  "isError": false
+}
+```
+
+| Status | Meaning |
+|--------|---------|
+| 200 | Tool executed successfully |
+| 404 | Tool not found in any backend |
+| 502 | Tool execution failed on the backend |
+
+---
+
+## `POST /resources/read`
+
+Proxy a resource read to the correct backend.
+
+### Request Body
+
+```json
+{
+  "uri": "docs://readme"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `uri` | string | yes | Resource URI |
+
+### Response
+
+```json
+{
+  "uri": "docs://readme",
+  "backend": "docs-server",
+  "contents": [
+    {
+      "uri": "docs://readme",
+      "text": "# README\n...",
+      "mimeType": "text/markdown"
+    }
+  ]
+}
+```
+
+| Status | Meaning |
+|--------|---------|
+| 200 | Resource read successfully |
+| 404 | Resource not found in any backend |
+| 502 | Resource read failed on the backend |

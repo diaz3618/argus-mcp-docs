@@ -18,6 +18,10 @@ export const Documents: Paths[] = [
         title: 'Concepts',
         href: '/concepts',
       },
+      {
+        title: 'Troubleshooting',
+        href: '/troubleshooting',
+      },
     ],
   },
   {
@@ -85,7 +89,7 @@ export const Documents: Paths[] = [
         href: '/overview',
       },
       {
-        title: 'Built-in Plugins',
+        title: 'Middleware Reference',
         href: '/built-in-plugins',
       },
     ],

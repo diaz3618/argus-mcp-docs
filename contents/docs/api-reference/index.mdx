@@ -26,7 +26,7 @@ Token configuration:
 - Config: `server.management.token`
 - Env: `ARGUS_MGMT_TOKEN`
 - If no token is configured, the API is open (no auth)
-- `GET /health` is always public (no token required)
+- `GET /health` and `GET /ready` are always public (no token required)
 
 ## Endpoints
 
@@ -36,8 +36,10 @@ See [Endpoint Reference](/docs/api-reference/endpoints) for the complete API spe
 
 | Endpoint | Method | Auth | Description |
 |----------|--------|------|-------------|
-| `/health` | GET | Public | Liveness / readiness probe |
+| `/health` | GET | Public | Liveness probe |
+| `/ready` | GET | Public | Readiness probe (503 until backends connect) |
 | `/status` | GET | Token | Full service status |
+| `/batch` | GET | Token | Combined status + backends + capabilities + events |
 | `/backends` | GET | Token | Backend connection states |
 | `/groups` | GET | Token | Logical server groups |
 | `/capabilities` | GET | Token | Aggregated tools/resources/prompts |
@@ -46,7 +48,14 @@ See [Endpoint Reference](/docs/api-reference/endpoints) for the complete API spe
 | `/events/stream` | GET | Token | Real-time event SSE stream |
 | `/reload` | POST | Token | Hot-reload config |
 | `/reconnect/{name}` | POST | Token | Reconnect a backend |
+| `/reauth/{name}` | POST | Token | Trigger interactive re-authentication |
 | `/shutdown` | POST | Token | Graceful shutdown |
+| `/registry/search` | GET | Token | Search external MCP registries |
+| `/skills` | GET | Token | List discovered skills |
+| `/skills/{name}/enable` | POST | Token | Enable a skill |
+| `/skills/{name}/disable` | POST | Token | Disable a skill |
+| `/tools/call` | POST | Token | Proxy a tool call to a backend |
+| `/resources/read` | POST | Token | Proxy a resource read to a backend |
 
 ## Error Responses
 

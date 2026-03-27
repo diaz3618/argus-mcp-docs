@@ -1,0 +1,177 @@
+---
+title: "Troubleshooting"
+description: "Solutions for common issues when installing, starting, or connecting to Argus MCP."
+---
+
+## Server Won't Start
+
+### Port already in use
+
+```
+ERROR: [Errno 98] Address already in use
+```
+
+Another process is using port 9000. Either stop it or pick a different port:
+
+```bash
+argus-mcp server --port 8080
+```
+
+To find what's using the port:
+
+```bash
+lsof -i :9000
+```
+
+### Config file not found
+
+```
+ERROR: No config file found
+```
+
+Argus looks for `config.yaml` then `config.yml` in the current directory. Either create one or pass an explicit path:
+
+```bash
+argus-mcp server --config /path/to/config.yaml
+```
+
+## Backend Connection Failures
+
+### Backend stays in "Pending" or "Failed" state
+
+Check that the command exists and is on your `PATH`:
+
+```bash
+which npx    # or whatever command your backend uses
+```
+
+If using container isolation, make sure Docker or Podman is running:
+
+```bash
+docker info
+```
+
+### Timeout during initialization
+
+Increase the init timeout for slow-starting backends:
+
+```yaml
+backends:
+  slow-server:
+    type: stdio
+    command: npx
+    args: ["-y", "heavy-mcp-server"]
+    timeouts:
+      init: 120   # seconds (default: 30)
+```
+
+### npm/npx packages fail to install inside containers
+
+The container may not have network access or the package may need system dependencies:
+
+```yaml
+backends:
+  my-server:
+    type: stdio
+    command: npx
+    args: ["-y", "my-mcp-server"]
+    container:
+      system_deps: ["curl", "git"]   # OS packages needed at build time
+```
+
+To debug, pre-build the image and inspect it:
+
+```bash
+argus-mcp build --config config.yaml
+docker run -it argus-mcp-my-server sh
+```
+
+## Container Isolation Issues
+
+### Docker not found / container isolation disabled
+
+If you see:
+
+```
+WARNING: No container runtime found, running backends as bare subprocesses
+```
+
+Install Docker or Podman, or disable the warning by explicitly opting out:
+
+```yaml
+feature_flags:
+  container_isolation: false
+```
+
+### Image build fails
+
+Check Docker daemon is running and you have disk space. To retry a clean build:
+
+```bash
+argus-mcp clean --all
+argus-mcp build
+```
+
+## Client Connection Issues
+
+### MCP client can't connect
+
+Verify the server is running and listening:
+
+```bash
+curl http://127.0.0.1:9000/manage/v1/health
+```
+
+If the server is on a remote host, ensure `host` is set to `0.0.0.0` (not the default `127.0.0.1`):
+
+```yaml
+server:
+  host: "0.0.0.0"
+  port: 9000
+```
+
+### 401 Unauthorized on management API
+
+A management token is configured but not included in the request:
+
+```bash
+curl -H "Authorization: Bearer $ARGUS_MGMT_TOKEN" \
+     http://localhost:9000/manage/v1/status
+```
+
+Check `server.management.token` in your config or the `ARGUS_MGMT_TOKEN` environment variable.
+
+## TUI Issues
+
+### TUI shows "Connection refused"
+
+The TUI connects to the server's management API. Make sure the server is running first:
+
+```bash
+# Terminal 1
+argus-mcp server
+
+# Terminal 2
+argus-mcp tui
+```
+
+For remote servers, pass the URL explicitly:
+
+```bash
+argus-mcp tui --server http://192.168.1.100:9000
+```
+
+## Cleanup
+
+### Remove all Argus containers and images
+
+```bash
+argus-mcp clean --all
+```
+
+### Reset to a clean state
+
+```bash
+argus-mcp stop --all
+argus-mcp clean --all
+```
