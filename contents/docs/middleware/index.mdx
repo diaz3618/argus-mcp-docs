@@ -1,0 +1,37 @@
+---
+title: "Middleware"
+description: "Composable middleware pipeline for processing MCP requests in Argus."
+---
+
+Argus MCP processes every MCP request through a composable middleware chain. Each middleware wraps the next, forming an onion-style pipeline that handles cross-cutting concerns -- authentication, authorization, telemetry, audit logging, and error recovery -- without coupling them to business logic.
+
+## Pipeline at a Glance
+
+```
+     Client Request
+           |
+           v
++----------------------+
+|  AuthMiddleware      |  <-- Validates tokens, injects UserIdentity
++----------------------+
+|  AuthzMiddleware     |  <-- RBAC policy evaluation
++----------------------+
+|  TelemetryMiddleware |  <-- OTel spans + metrics
++----------------------+
+|  AuditMiddleware     |  <-- Structured audit logging (NIST SP 800-53)
++----------------------+
+|  RecoveryMiddleware  |  <-- Exception safety net
++----------------------+
+|  RoutingMiddleware   |  <-- Resolve capability -> backend, forward
++----------------------+
+           |
+           v
+    Backend MCP Server
+```
+
+Execution order is outermost-first for requests, innermost-first for responses. The first middleware in the list wraps all others.
+
+## Sections
+
+- [Overview](/docs/middleware/overview) -- Pipeline architecture, request context, chain construction, and writing custom middleware
+- [Built-in Plugins](/docs/middleware/built-in-plugins) -- Reference for all built-in middleware: Auth, Authz, Telemetry, Audit, Recovery, and Routing

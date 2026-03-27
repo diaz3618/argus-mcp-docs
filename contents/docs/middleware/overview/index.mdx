@@ -1,0 +1,105 @@
+---
+title: "Middleware Overview"
+description: "Architecture of the Argus MCP middleware pipeline, request context, chain construction, and custom middleware."
+---
+
+The Argus middleware pipeline follows an onion-style architecture where each middleware wraps the next handler. Requests flow inward through the chain, and responses flow back outward.
+
+## Chain Architecture
+
+```
+     Client Request
+           |
+           v
++----------------------+
+|  AuthMiddleware      |  <-- Validates tokens, injects UserIdentity
++----------------------+
+|  AuthzMiddleware     |  <-- RBAC policy evaluation
++----------------------+
+|  TelemetryMiddleware |  <-- OTel spans + metrics
++----------------------+
+|  AuditMiddleware     |  <-- Structured audit logging (NIST SP 800-53)
++----------------------+
+|  RecoveryMiddleware  |  <-- Exception safety net
++----------------------+
+|  RoutingMiddleware   |  <-- Resolve capability -> backend, forward
++----------------------+
+           |
+           v
+    Backend MCP Server
+```
+
+**Execution order:** outermost-first for requests, innermost-first for responses. The first middleware in the list wraps all others.
+
+## Request Context
+
+Every request carries a `RequestContext` dataclass through the chain:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `request_id` | `str` | Unique ID (uuid4 hex, 12 chars) |
+| `capability_name` | `str` | Exposed capability name |
+| `mcp_method` | `str` | `call_tool`, `read_resource`, or `get_prompt` |
+| `arguments` | `dict` | Call arguments (optional) |
+| `server_name` | `str` | Backend name (set by routing) |
+| `original_name` | `str` | Original capability name at backend (set by routing) |
+| `start_time` | `float` | Monotonic timestamp |
+| `metadata` | `dict` | Arbitrary key-value store for middleware data |
+| `error` | `Exception` | Set by recovery middleware on failure |
+
+The `elapsed_ms` property computes wall-clock time since `start_time`.
+
+## Chain Construction
+
+The chain is built during server startup in the lifespan handler:
+
+```python
+from argus_mcp.bridge.middleware.chain import build_chain
+
+# Default chain (always active)
+chain = build_chain(
+    middlewares=[RecoveryMiddleware(), AuditMiddleware(audit_logger)],
+    handler=RoutingMiddleware(registry, manager),
+)
+
+# Full chain (when auth + authz + telemetry are configured)
+chain = build_chain(
+    middlewares=[
+        AuthMiddleware(auth_registry),
+        AuthzMiddleware(policy_engine),
+        TelemetryMiddleware(),
+        AuditMiddleware(audit_logger),
+        RecoveryMiddleware(),
+    ],
+    handler=RoutingMiddleware(registry, manager),
+)
+```
+
+The `build_chain()` function composes middlewares in list order: the first middleware is the outermost wrapper. Each middleware calls `next_handler(ctx)` to proceed down the chain.
+
+## Writing Custom Middleware
+
+A middleware is any async callable matching the `MCPMiddleware` protocol:
+
+```python
+from argus_mcp.bridge.middleware.chain import MCPHandler, RequestContext
+
+class MyMiddleware:
+    async def __call__(self, ctx: RequestContext, next_handler: MCPHandler) -> Any:
+        # Pre-processing
+        print(f"Before: {ctx.capability_name}")
+
+        # Call next middleware/handler
+        result = await next_handler(ctx)
+
+        # Post-processing
+        print(f"After: {ctx.elapsed_ms:.1f}ms")
+
+        return result
+```
+
+Add it to the chain by inserting it at the desired position in the `middlewares` list passed to `build_chain()`.
+
+<Note>
+The order of middleware in the list matters. The first middleware wraps all subsequent ones, so place authentication and authorization early in the chain.
+</Note>

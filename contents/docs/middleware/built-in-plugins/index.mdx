@@ -1,0 +1,115 @@
+---
+title: "Built-in Plugins"
+description: "Reference for all built-in Argus MCP middleware: Auth, Authz, Telemetry, Audit, Recovery, and Routing."
+---
+
+Argus ships with six built-in middleware plugins that cover authentication, authorization, observability, and request routing.
+
+## AuthMiddleware
+
+**Module:** `argus_mcp.bridge.middleware.auth`
+
+Extracts the bearer token from `ctx.metadata["auth_token"]`, validates it via the configured `AuthProviderRegistry`, and injects the resulting `UserIdentity` into `ctx.metadata["user"]`.
+
+- Raises `AuthenticationError` (401) on invalid tokens
+- In anonymous mode, injects a no-op anonymous identity
+- Skipped entirely when incoming auth is not configured
+
+## AuthzMiddleware
+
+**Module:** `argus_mcp.bridge.middleware.authz`
+
+Evaluates the authenticated user's roles against RBAC policies using the `PolicyEngine`. Resource identifiers follow the format `tool:<capability_name>`.
+
+- Raises `AuthorizationError` (403) when the policy decision is DENY
+- First-match-wins evaluation (order matters in policy list)
+- Skipped when `authorization.enabled` is `false`
+
+## TelemetryMiddleware
+
+**Module:** `argus_mcp.bridge.middleware.telemetry`
+
+Creates an OpenTelemetry trace span per request and records request metrics (count, duration, error rate) via `record_request()`.
+
+- Span name format: `mcp.<method>.<capability>`
+- Attributes: `mcp.method`, `mcp.capability`, `mcp.request_id`, `mcp.backend`
+- Records exceptions on the span
+- Pass-through when OpenTelemetry is not installed
+
+### Configuration
+
+```yaml
+telemetry:
+  enabled: true
+  otlp_endpoint: "http://localhost:4317"
+  service_name: "argus-mcp"
+```
+
+## AuditMiddleware
+
+**Module:** `argus_mcp.bridge.middleware.audit`
+
+Logs structured audit events for every request (pre and post). When an `AuditLogger` is provided, events are written as JSON lines to a dedicated audit file. Otherwise falls back to standard Python logging.
+
+- Emits `AuditEvent` with source, target, outcome, and timing
+- Events are NIST SP 800-53 AU-3 aligned
+
+### Configuration
+
+```yaml
+audit:
+  enabled: true
+  file: "logs/audit.jsonl"
+  max_size_mb: 100
+  backup_count: 5
+```
+
+## RecoveryMiddleware
+
+**Module:** `argus_mcp.bridge.middleware.recovery`
+
+Exception safety net that catches any unhandled error and returns a structured MCP error response so clients always get a well-formed reply.
+
+- Sets `ctx.error` with the caught exception
+- Returns `CallToolResult(isError=True)` with a sanitized message
+- **Never leaks** internal details (file paths, SQL, stack traces)
+- Falls back to JSON-RPC error format if MCP types are unavailable
+
+<Note>
+RecoveryMiddleware should be placed as the last middleware before RoutingMiddleware to ensure it catches errors from all preceding middleware.
+</Note>
+
+## RoutingMiddleware
+
+**Module:** `argus_mcp.bridge.middleware.routing`
+
+The innermost (terminal) middleware. Resolves the capability name to a backend server via the `CapabilityRegistry`, then forwards the request to the backend's MCP session.
+
+- Populates `ctx.server_name` and `ctx.original_name`
+- Validates `mcp_method` against allowed set: `call_tool`, `read_resource`, `get_prompt`
+- Raises `ValueError` for unknown capabilities
+- Raises `RuntimeError` for missing backend sessions
+
+## Default Chain Order
+
+The recommended (and default) middleware chain order is:
+
+1. **AuthMiddleware** -- authenticate the caller
+2. **AuthzMiddleware** -- authorize the request
+3. **TelemetryMiddleware** -- start trace span
+4. **AuditMiddleware** -- log the request
+5. **RecoveryMiddleware** -- catch unhandled errors
+6. **RoutingMiddleware** -- resolve and forward to backend (terminal handler)
+
+```python
+chain = build_chain(
+    middlewares=[
+        AuthMiddleware(auth_registry),
+        AuthzMiddleware(policy_engine),
+        TelemetryMiddleware(),
+        AuditMiddleware(audit_logger),
+        RecoveryMiddleware(),
+    ],
+    handler=RoutingMiddleware(registry, manager),
+)
+```

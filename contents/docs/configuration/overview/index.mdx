@@ -1,0 +1,246 @@
+---
+title: "Overview"
+description: "YAML config file format, resolution order, top-level structure, variable expansion, and server settings for Argus MCP."
+---
+
+## File Format
+
+Argus uses **YAML** config files. The loader auto-detects the extension.
+
+| Extension | Format |
+|-----------|--------|
+| `.yaml`, `.yml` | YAML |
+
+### Config File Resolution
+
+Argus searches for config files in this order:
+
+1. `--config` CLI flag (explicit path)
+2. `ARGUS_CONFIG` environment variable
+3. Auto-detect in project directory: `config.yaml` then `config.yml`
+
+## Config Structure
+
+```yaml
+version: "1"                    # Config format version (required)
+
+server: { ... }                 # Server settings
+client: { ... }                 # TUI / client settings
+backends: { ... }               # Backend MCP server definitions
+conflict_resolution: { ... }    # Capability conflict strategy
+audit: { ... }                  # Audit logging
+optimizer: { ... }              # Tool optimizer (meta-tools)
+telemetry: { ... }              # OpenTelemetry integration
+secrets: { ... }                # Encrypted secret management
+registries: [ ... ]             # External MCP server catalogs
+incoming_auth: { ... }          # Incoming client authentication
+authorization: { ... }          # RBAC policies
+feature_flags: { ... }          # Feature toggles
+```
+
+## Variable Expansion
+
+Config values support two types of dynamic references.
+
+### Environment Variables
+
+Use `${VAR_NAME}` to inject environment variable values:
+
+```yaml
+backends:
+  my-server:
+    type: sse
+    url: "http://localhost:${MY_SERVER_PORT}/sse"
+    headers:
+      Authorization: "Bearer ${MY_API_KEY}"
+```
+
+### Secret References
+
+Use `secret:<name>` to resolve values from the encrypted secret store:
+
+```yaml
+backends:
+  my-server:
+    type: sse
+    url: "http://localhost:8080/sse"
+    headers:
+      Authorization: "Bearer secret:my-api-key"
+```
+
+See [Secrets Management](/docs/configuration/secrets-management) for setting up the secret store.
+
+## Server Settings
+
+Server listen address and transport settings.
+
+```yaml
+server:
+  host: "127.0.0.1"
+  port: 9000
+  transport: sse                # "sse" or "streamable-http"
+  management:
+    enabled: true
+    token: "${ARGUS_MGMT_TOKEN}"
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `host` | string | `"127.0.0.1"` | Bind address |
+| `port` | integer | `9000` | Listen port (1--65535) |
+| `transport` | string | `"sse"` | Primary transport: `"sse"` or `"streamable-http"` |
+| `management.enabled` | boolean | `true` | Enable the `/manage/v1/` REST API |
+| `management.token` | string | `null` | Bearer token for management endpoints. Also `ARGUS_MGMT_TOKEN` env var. If unset, management API has no auth. |
+
+<Note>
+Both transports are always available regardless of the `transport` setting. The setting controls which is advertised as primary.
+</Note>
+
+## Conflict Resolution
+
+Strategy for handling duplicate capability names across backends.
+
+```yaml
+conflict_resolution:
+  strategy: prefix        # first-wins | prefix | priority | error
+  separator: "_"
+  order: []
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `strategy` | string | `"first-wins"` | Resolution strategy (see below) |
+| `separator` | string | `"_"` | Separator for prefix strategy |
+| `order` | list | `[]` | Backend priority for `priority` strategy |
+
+| Strategy | Behavior |
+|----------|----------|
+| `first-wins` | First backend to register a name wins; duplicates are dropped |
+| `prefix` | Prefix capability with backend name: `backend_toolname` |
+| `priority` | Use `order` list to determine winner; others are dropped |
+| `error` | Raise `CapabilityConflictError` at startup |
+
+## Audit
+
+Structured audit logging (NIST SP 800-53 AU-3 aligned).
+
+```yaml
+audit:
+  enabled: true
+  file: "logs/audit.jsonl"
+  max_size_mb: 100
+  backup_count: 5
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `enabled` | boolean | `true` | Enable audit event logging |
+| `file` | string | `"logs/audit.jsonl"` | Path to JSONL audit log |
+| `max_size_mb` | integer | `100` | Max file size before rotation |
+| `backup_count` | integer | `5` | Number of rotated backups |
+
+## Optimizer
+
+Replaces the full tool catalog with two meta-tools (`find_tool` and `call_tool`) for LLMs that struggle with large tool lists.
+
+```yaml
+optimizer:
+  enabled: false
+  keep_tools:
+    - important_tool
+    - another_tool
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `enabled` | boolean | `false` | Enable the tool optimizer |
+| `keep_tools` | list | `[]` | Tools to always expose alongside meta-tools |
+
+When enabled, clients see only `find_tool`, `call_tool`, and any `keep_tools`. The LLM uses `find_tool` to search the tool index, then `call_tool` to invoke the selected tool.
+
+## Telemetry
+
+OpenTelemetry integration for distributed tracing and metrics.
+
+```yaml
+telemetry:
+  enabled: false
+  otlp_endpoint: "http://localhost:4317"
+  service_name: "argus-mcp"
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `enabled` | boolean | `false` | Enable OpenTelemetry tracing and metrics |
+| `otlp_endpoint` | string | `"http://localhost:4317"` | OTLP collector endpoint (gRPC or HTTP) |
+| `service_name` | string | `"argus-mcp"` | Service name reported to the collector |
+
+## Registries
+
+External registry endpoints for server discovery.
+
+```yaml
+registries:
+  - name: "official"
+    url: "https://registry.mcp.example.com"
+    priority: 100
+    auth: "api-key"
+    api_key_env: "MCP_REGISTRY_KEY"
+  - name: "internal"
+    url: "https://internal-registry.corp.local"
+    priority: 200
+    auth: "bearer"
+    token_env: "INTERNAL_REGISTRY_TOKEN"
+```
+
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `name` | string | yes | -- | Unique display name for this registry |
+| `url` | string | yes | -- | Registry endpoint URL |
+| `priority` | integer | no | `100` | Resolution priority (lower = checked first) |
+| `auth` | string | no | `"none"` | Authentication type: `"none"`, `"api-key"`, or `"bearer"` |
+| `api_key_env` | string | no | -- | Environment variable holding the API key |
+| `token_env` | string | no | -- | Environment variable holding the bearer token |
+
+## Client
+
+TUI client configuration.
+
+```yaml
+client:
+  server_url: "http://127.0.0.1:9000"
+  token: "${ARGUS_CLIENT_TOKEN}"
+  theme: "textual-dark"
+  poll_interval: 2.0
+  servers_config: "~/.config/argus-mcp/servers.json"
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `server_url` | string | `"http://127.0.0.1:9000"` | URL of the Argus server to connect to |
+| `token` | string | -- | Authentication token (supports `${ENV_VAR}`) |
+| `theme` | string | `"textual-dark"` | Textual theme name for the TUI |
+| `poll_interval` | float | `2.0` | Polling interval in seconds (0.5--60.0) |
+| `servers_config` | string | -- | Path to `servers.json` for multi-server mode |
+
+## Feature Flags
+
+Boolean feature toggles.
+
+```yaml
+feature_flags:
+  hot_reload: true
+  optimizer: false
+```
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `optimizer` | `false` | Enable the tool optimizer (find_tool / call_tool meta-tools) |
+| `hot_reload` | `true` | Enable config hot-reload via management API |
+| `outgoing_auth` | `true` | Enable outgoing authentication for backends |
+| `session_management` | `true` | Enable session management |
+| `yaml_config` | `true` | Enable YAML config file support |
+| `container_isolation` | `true` | Enable automatic container isolation for stdio backends |
+| `build_on_startup` | `true` | Build container images on server startup |
+
+Unknown flag names are accepted for future-proofing and default to `false`.

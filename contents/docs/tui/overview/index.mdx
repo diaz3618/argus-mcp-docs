@@ -1,0 +1,398 @@
+---
+title: "TUI Overview"
+description: "Complete guide to the Argus MCP terminal UI: screens, keybindings, command palette, theming, multi-server mode, and widget reference."
+---
+
+Argus includes an interactive terminal UI built with [Textual](https://textual.textualize.io/). The TUI connects to a running Argus server via the management API and to the argusd daemon via Unix Domain Socket, providing real-time monitoring, capability browsing, container/pod management, and server control.
+
+## Launching
+
+```bash
+# Via the argus-cli package
+argus-tui
+
+# Or via the server package
+argus-mcp tui
+
+# Connect to remote server
+argus-tui --server http://192.168.1.100:9000
+
+# With authentication
+argus-tui --token my-management-token
+
+# Multi-server mode
+argus-tui --servers-config ~/.config/argus-mcp/servers.json
+```
+
+## Screens
+
+The TUI has twelve primary modes plus several modal/utility screens, accessible via keybindings or the command palette.
+
+### Dashboard (key: 1 or d)
+
+The default screen showing an overview of the Argus instance:
+
+- **Server Info** -- Name, version, uptime, transport URLs
+- **Backend Status** -- Connection state and health for each backend, with status dots and phase icons from the shared design module
+- **Event Log** -- Real-time event stream with severity indicators
+- **Capability Summary** -- Quick counts of tools, resources, and prompts
+
+### Tools (key: 2)
+
+Full-screen capability explorer:
+
+- Browse all aggregated tools, resources, and prompts
+- Filter by capability type (key: `t` tools, `r` resources, `p` prompts)
+- Search by name
+- View detailed capability information including schemas
+
+### Registry (key: 3)
+
+Server browser and discovery:
+
+- Browse available MCP servers from the registry
+- View server details and metadata
+- Install panel for adding new backends
+
+### Settings (key: 4 or s)
+
+Configuration and preferences:
+
+- View current config (read from server)
+- Theme selection
+- TUI preferences
+
+### Skills (key: 5)
+
+Skill pack management:
+
+- Browse installed skills with enable/disable status
+- Enable, disable, and apply skills
+- View skill manifests and workflow details
+
+### Editor (key: 6)
+
+Tool parameter editing and testing:
+
+- Edit tool parameters with type-aware input fields
+- JSON schema visualization
+- Test invocation (dry-run)
+
+### Audit (key: 7)
+
+Audit log viewer:
+
+- Browse structured audit events
+- Filter by method, backend, and status
+- View event details with timing information
+
+### Health (key: 8 or h)
+
+Backend health monitoring:
+
+- Per-backend health status and history
+- Health check configuration
+- Version drift detection
+
+### Security (key: 9)
+
+Security overview:
+
+- Authentication status and configuration
+- Active sessions and middleware chain
+- Secrets and network isolation status
+
+### Operations (key: 0 or o)
+
+Operational controls:
+
+- Backend management (reconnect, restart)
+- Server groups and sync status
+- Workflow management
+
+### Containers (key: c)
+
+Docker container management powered by argusd:
+
+- **Overview** -- Container list with status, resource usage, uptime
+- **Logs** -- Multi-container log viewer with severity coloring
+- **Stats** -- Reactive CPU/memory percentage bars from argusd push stream
+- **Exec** -- Placeholder for interactive terminal (future)
+
+<Note>
+Requires argusd to be running.
+</Note>
+
+### Kubernetes (key: k)
+
+Kubernetes pod management powered by argusd:
+
+- **Pods** -- Pod list with status, node, IP, restarts, age
+- **Logs** -- Per-pod log viewer with severity coloring
+- **Events** -- Kubernetes events for the selected pod
+- **Details** -- Describe output for the selected pod
+
+<Note>
+Only available when argusd has a Kubernetes connection.
+</Note>
+
+## Keybindings
+
+| Key | Action |
+|-----|--------|
+| `q` | Quit |
+| `1` or `d` | Switch to Dashboard |
+| `2` | Switch to Tools |
+| `3` | Switch to Registry |
+| `4` or `s` | Switch to Settings |
+| `5` | Switch to Skills |
+| `6` | Switch to Editor |
+| `7` | Switch to Audit |
+| `8` or `h` | Switch to Health |
+| `9` | Switch to Security |
+| `0` or `o` | Switch to Operations |
+| `c` | Switch to Containers |
+| `k` | Switch to Kubernetes |
+| `t` | Show Tools tab |
+| `r` | Show Resources tab |
+| `p` | Show Prompts tab |
+| `n` | Cycle theme |
+| `T` (Shift) | Open theme picker |
+| `Ctrl+P` | Command palette |
+
+## Command Palette
+
+Press `Ctrl+P` to open the command palette with quick access to:
+
+- All TUI modes (Dashboard, Tools, Registry, Settings, Skills, etc.)
+- REPL-style navigation verbs (e.g. `backends list`, `health`, `audit`)
+- Theme switching with live preview
+- Server details and connection info
+- Tools/Resources/Prompts tab switching
+
+## Polling
+
+The TUI polls the management API every 2 seconds to refresh:
+
+- Health status
+- Backend states
+- Capabilities
+- Events
+
+### Connection Handling
+
+- **Connection lost**: TUI shows a connection-lost indicator and continues polling. It will reconnect automatically when the server becomes available.
+- **Connection restored**: TUI resumes normal operation and refreshes all data.
+
+## Multi-Server Mode
+
+With a `servers.json` config, the TUI shows a server selector widget allowing you to switch between multiple Argus instances:
+
+```json
+{
+  "servers": [
+    { "name": "local", "url": "http://127.0.0.1:9000" },
+    { "name": "staging", "url": "http://staging:9000", "token": "tok" }
+  ],
+  "active": "local"
+}
+```
+
+The server selector appears at the top of the dashboard. Selecting a different server reconnects the TUI to that instance.
+
+## Theming
+
+The TUI ships with 16 built-in YAML color palettes and supports Textual's theme system. Cycle through themes with `n` or open the theme picker with `T` (Shift+T) for a visual preview.
+
+Built-in themes: catppuccin-frappe, catppuccin-latte, catppuccin-macchiato, catppuccin-mocha, dracula, everforest, gruvbox, kanagawa, monokai, nord, one-dark, rose-pine, rose-pine-moon, solarized-dark, solarized-light, tokyo-night.
+
+When a Textual theme is selected, the matching YAML palette is activated automatically so Rich output (status dots, tables, etc.) stays visually consistent with the TUI chrome. Custom YAML palettes can be placed in `~/.config/argus-mcp/themes/`.
+
+## Design System
+
+Both the TUI and REPL share a unified visual language defined in `argus_cli/design.py`:
+
+| Convention | Examples |
+|------------|----------|
+| Status dots | healthy, connected, degraded, disconnected, error |
+| Phase icons | pending, initializing, ready, degraded, failed |
+| Transport badges | `stdio`, `SSE`, `StreamableHTTP` |
+
+## Screen Architecture
+
+All screens extend `ArgusScreen` (a common `BaseScreen`) and implement `compose_content()` for layout. The TUI uses Textual's mode system -- each screen is registered as a mode in `ArgusApp`.
+
+```
+ArgusApp
+├── DashboardScreen       (mode: "dashboard",       key: 1/d)
+├── ToolsScreen           (mode: "tools",            key: 2)
+├── RegistryScreen        (mode: "registry",         key: 3)
+├── SettingsScreen        (mode: "settings",         key: 4/s)
+├── SkillsScreen          (mode: "skills",           key: 5)
+├── ToolEditorScreen      (mode: "editor",           key: 6)
+├── AuditLogScreen        (mode: "audit",            key: 7)
+├── HealthScreen          (mode: "health",           key: 8/h)
+├── SecurityScreen        (mode: "security",         key: 9)
+├── OperationsScreen      (mode: "operations",       key: 0/o)
+├── ContainersScreen      (mode: "containers",       key: c)
+├── KubernetesScreen      (mode: "kubernetes",       key: k)
+│
+├── BackendConfigModal    (modal — backend installation form)
+├── BackendDetailModal    (modal — lifecycle status for a backend)
+├── ServerDetailModal     (modal — registry server detail / install)
+├── CatalogBrowserScreen  (screen — catalog import pipeline)
+├── ClientConfigScreen    (modal — client-side config editor)
+├── ServerLogsScreen      (screen — live server log viewer)
+├── ExportImportScreen    (screen — config export/import)
+├── SetupWizardScreen     (screen — first-run configuration wizard)
+├── ExitModal             (modal — exit confirmation with resume options)
+├── ElicitationScreen     (triggered by backends)
+└── ThemePickerScreen     (key: T)
+```
+
+## Screen Details
+
+### DashboardScreen
+
+**File:** `tui/screens/dashboard.py` | **Key:** `1` or `d`
+
+The primary monitoring screen with a grid layout showing server info, backend status, event log, and a tabbed capability section.
+
+#### Dashboard Widgets
+
+| Widget | File | Purpose |
+|--------|------|---------|
+| `ServerSelectorWidget` | `widgets/server_selector.py` | Multi-server dropdown |
+| `ServerInfoWidget` | `widgets/server_info.py` | Server details panel |
+| `BackendStatusWidget` | `widgets/backend_status.py` | Backend status grid |
+| `EventLogWidget` | `widgets/event_log.py` | Event stream |
+| `CapabilitySection` | `widgets/capability_tables.py` | Tabbed capability tables |
+
+### ToolsScreen
+
+**File:** `tui/screens/tools.py` | **Key:** `2`
+
+Full-screen capability explorer with filtering and search. Tab switching: `t` (tools), `r` (resources), `p` (prompts).
+
+### RegistryScreen
+
+**File:** `tui/screens/registry.py` | **Key:** `3`
+
+Server browser for discovering and managing MCP servers with registry browser listing and install panel.
+
+### SkillsScreen
+
+**File:** `tui/screens/skills.py` | **Key:** `5`
+
+Manage installed skill packs: list installed skills with enable/disable toggles, view skill manifests, install/uninstall skills.
+
+### ToolEditorScreen
+
+**File:** `tui/screens/tool_editor.py` | **Key:** `6`
+
+Edit and test tool parameters with type-aware input fields, JSON schema visualization, and test invocation (dry-run).
+
+### AuditLogScreen
+
+**File:** `tui/screens/audit_log.py` | **Key:** `7`
+
+Extends `BaseLogScreen` (shared log infrastructure with pause/resume, export). Timestamped audit events with method, backend, and status columns.
+
+### HealthScreen
+
+**File:** `tui/screens/health.py` | **Key:** `8` or `h`
+
+Backend health monitoring with per-backend health status and history, health check configuration, and version drift detection.
+
+### SecurityScreen
+
+**File:** `tui/screens/security.py` | **Key:** `9`
+
+Security overview: authentication status, active sessions, middleware chain visualization, secrets and network isolation status.
+
+### OperationsScreen
+
+**File:** `tui/screens/operations.py` | **Key:** `0` or `o`
+
+Operational controls: backend management (reconnect, restart, remove), server groups and sync status, workflow management and optimizer controls.
+
+### ContainersScreen
+
+**File:** `tui/screens/containers.py` | **Key:** `c`
+
+Docker container management via argusd. Tabbed layout with Overview, Logs, Stats, and Exec panes. All data flows through `DaemonClient` over the argusd Unix Domain Socket.
+
+### KubernetesScreen
+
+**File:** `tui/screens/kubernetes.py` | **Key:** `k`
+
+Kubernetes pod management via argusd. Tabbed layout with Pods, Logs, Events, and Details panes. Only available when argusd has a Kubernetes connection.
+
+## Modal and Utility Screens
+
+| Screen | File | Access | Purpose |
+|--------|------|--------|---------|
+| BackendConfigModal | `backend_config.py` | Registry or Dashboard | Transport-specific backend configuration form |
+| BackendDetailModal | `backend_detail.py` | Enter on backend row | Full lifecycle status for a backend |
+| ServerDetailModal | `server_detail.py` | Select in Registry | Server metadata and install button |
+| CatalogBrowserScreen | `catalog_browser.py` | Command palette | Catalog import pipeline with YAML editor |
+| ClientConfigScreen | `client_config.py` | Settings screen | Client-side configuration editor |
+| ServerLogsScreen | `server_logs.py` | Dashboard or Operations | Live server log viewer |
+| ExportImportScreen | `export_import.py` | Command palette or Settings | Configuration export and import |
+| SetupWizardScreen | `setup_wizard.py` | First run or command palette | Step-by-step configuration wizard |
+| ExitModal | `exit_modal.py` | Quit action (`q`) | Graceful exit with resume options |
+| ElicitationScreen | `elicitation.py` | Triggered by backends | Handle MCP elicitation protocol requests |
+| ThemePickerScreen | `theme_picker.py` | `T` (Shift+T) | Visual theme selection with previews |
+
+## Widget Reference
+
+| Widget | File | Description |
+|--------|------|-------------|
+| `BackendStatusWidget` | `backend_status.py` | Backend lifecycle display |
+| `CapabilitySection` | `capability_tables.py` | Tabbed tables for tools/resources/prompts |
+| `ContainerLogViewer` | `container_logs.py` | Multi-container log stream with severity coloring |
+| `ContainerStatsPanel` | `container_stats.py` | Reactive CPU/memory bars |
+| `ContainerTable` | `container_table.py` | Container list with status, uptime, resources |
+| `ContainerStatusBar` | `container_table.py` | Container summary (running/stopped counts) |
+| `ElicitationFormWidget` | `elicitation_form.py` | Dynamic elicitation form |
+| `EventLogWidget` | `event_log.py` | Scrollable event timeline |
+| `FilterBar` | `filter_bar.py` | Inline text filtering input |
+| `FilterToggleWidget` | `filter_toggle.py` | Capability filter controls |
+| `HealthPanelWidget` | `health_panel.py` | Per-backend health status and history |
+| `InstallPanelWidget` | `install_panel.py` | Backend installation form |
+| `JumpOverlay` | `jump_overlay.py` | Jump-mode label overlay for keyboard navigation |
+| `MiddlewarePanelWidget` | `middleware_panel.py` | Middleware chain visualization |
+| `ModuleContainer` | `module_container.py` | Collapsible container for modular screen sections |
+| `NetworkPanelWidget` | `network_panel.py` | Network isolation status |
+| `OptimizerPanelWidget` | `optimizer_panel.py` | Optimizer controls and metrics |
+| `OtelPanelWidget` | `otel_panel.py` | OpenTelemetry tracing display |
+| `ParamEditorWidget` | `param_editor.py` | Tool parameter editor |
+| `PercentageBar` | `percentage_bar.py` | Progress/utilization bars |
+| `PodTable` | `pod_table.py` | Kubernetes pod list with status |
+| `PodStatusBar` | `pod_table.py` | Pod summary (running/pending/failed counts) |
+| `QuickActions` | `quick_actions.py` | Context-sensitive action buttons |
+| `RegistryBrowserWidget` | `registry_browser.py` | Server registry browser |
+| `RegistryPanelWidget` | `registry_panel.py` | Registry panel |
+| `SecretsPanelWidget` | `secrets_panel.py` | Secrets management display |
+| `ServerConnectionsPanel` | `server_connections_panel.py` | Server connection panel |
+| `ServerGroupsWidget` | `server_groups.py` | Server group management |
+| `ServerInfoWidget` | `server_info.py` | Server details (name, version, uptime) |
+| `ServerSelectorWidget` | `server_selector.py` | Multi-server dropdown with connect action |
+| `SessionsPanelWidget` | `sessions_panel.py` | Active session tracking |
+| `SyncStatusWidget` | `sync_status.py` | Config sync status indicator |
+| `Toolbar` | `toolbar.py` | Action bar |
+| `ToolOpsPanel` | `tool_ops_panel.py` | Tool operations panel |
+| `ToolPreviewWidget` | `tool_preview.py` | Tool JSON schema display |
+| `TPlot` | `tplot.py` | Plotext-based charts for metrics visualization |
+| `VersionBadgeWidget` | `version_badge.py` | Version display badge |
+| `VersionDriftWidget` | `version_drift.py` | Version drift detection across backends |
+| `WorkflowsPanelWidget` | `workflows_panel.py` | Workflow management panel |
+
+## Custom Events
+
+| Event | File | Trigger |
+|-------|------|---------|
+| `CapabilitiesReady` | `events.py` | Backend capabilities loaded |
+| `ConnectionLost` | `events.py` | Server connection lost |
+| `ConnectionRestored` | `events.py` | Server connection restored |
+| `ServerSelected` | `widgets/server_selector.py` | User selects a server |

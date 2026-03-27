@@ -1,0 +1,148 @@
+---
+title: "Stdio Transport"
+description: "Stdio transport mode for launching and communicating with local MCP backend servers via stdin/stdout."
+---
+
+The stdio transport launches a local process and communicates with it over standard input and output. This is the primary way Argus connects to locally-installed MCP tool servers.
+
+<Note>
+Stdio is used exclusively for **backend** connections (Argus to a tool server), not for client-facing transport. Clients connect to Argus via SSE or Streamable HTTP.
+</Note>
+
+## Backend Configuration
+
+```yaml
+backends:
+  my-local-tool:
+    type: stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-everything"]
+    env:
+      NODE_ENV: production
+    group: tools
+    timeouts:
+      init: 30
+    filters:
+      tools:
+        allow: ["search_*"]
+        deny: ["dangerous_*"]
+    tool_overrides:
+      old_name:
+        name: new_name
+        description: "Custom description"
+```
+
+### Configuration Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `type` | `"stdio"` | -- | **Required** |
+| `command` | string | -- | **Required.** Executable to launch |
+| `args` | list | `[]` | Command arguments |
+| `env` | map | `null` | Environment variables for the process |
+| `group` | string | `"default"` | Logical server group |
+| `timeouts` | object | defaults | Connection timeouts |
+| `filters` | object | defaults | Capability filters |
+| `tool_overrides` | map | `{}` | Per-tool name/description overrides |
+
+## Automatic Container Isolation
+
+Argus automatically wraps every stdio backend in an isolated container (Docker or Podman) when a supported runtime is detected on the host. No configuration is needed -- container isolation is transparent and applied by default with secure settings:
+
+- **Filesystem**: `--read-only` root filesystem + tmpfs for `/tmp` and `/home/nonroot`
+- **Privileges**: `--cap-drop ALL`, `--security-opt no-new-privileges`
+- **Resources**: `--memory 512m --cpus 1`
+- **User**: UID 65532 (`nonroot`), matching distroless/Chainguard standards
+- **Init**: `--init` for proper signal handling
+
+### Image Building Pipeline
+
+Argus builds a purpose-built Docker image for each backend using Jinja2 templates. The command determines which template is used:
+
+| Command | Template | Base Image |
+|---------|----------|------------|
+| `uvx`, `uv`, `python`, `python3` | `uvx.dockerfile.j2` | `python:3.13-slim` |
+| `npx`, `node`, `tsx` | `npx.dockerfile.j2` | `node:22-alpine` |
+| `go` | `go.dockerfile.j2` | `golang:1.24-alpine` |
+
+If no container runtime is available, or the command has no recognized template mapping, Argus falls back to running the backend as a bare subprocess (with a log warning).
+
+### Per-Backend Container Options
+
+Individual backends can customize their container:
+
+```yaml
+backends:
+  my-backend:
+    type: stdio
+    command: npx
+    args: ["-y", "my-mcp-server"]
+    container_isolation: true          # default: inherits global flag
+    builder_image: "node:22-alpine"    # override base image
+    system_deps: ["curl", "jq"]        # additional OS packages
+    additional_packages: []            # extra language-level packages
+```
+
+### Disabling Container Isolation
+
+Globally via environment variable:
+
+```bash
+ARGUS_CONTAINER_ISOLATION=false
+```
+
+Or the feature flag in your config:
+
+```yaml
+feature_flags:
+  container_isolation: false
+```
+
+Or per-backend:
+
+```yaml
+backends:
+  my-backend:
+    container_isolation: false
+```
+
+### Pre-Building Images
+
+By default Argus builds the container image automatically the first time it encounters each backend. To pre-build all images ahead of time:
+
+```bash
+argus-mcp build --config config.yaml
+```
+
+To skip the build and fail fast if the image is absent:
+
+```bash
+ARGUS_CONTAINER_BUILD_IF_MISSING=false
+```
+
+## Parallel Startup
+
+Use the `--parallel` flag to build and connect stdio backends concurrently:
+
+```bash
+argus-mcp server --parallel
+```
+
+Startup concurrency and stagger delay are tunable via environment variables:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `ARGUS_STARTUP_CONCURRENCY` | `4` | Max simultaneous backend initializations |
+| `ARGUS_STARTUP_STAGGER_DELAY` | `0.5s` | Delay between launching each backend within a batch |
+
+## Backend Retry
+
+When a backend fails to initialize, Argus retries automatically with exponential back-off:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `ARGUS_BACKEND_RETRIES` | `3` | Number of retry attempts after initial failure |
+| `ARGUS_BACKEND_RETRY_DELAY` | `5.0s` | Base delay before first retry |
+| `ARGUS_BACKEND_RETRY_BACKOFF` | `1.5x` | Multiplier applied to delay on each successive retry |
+
+Example retry schedule with defaults: 5s, 7.5s, 11.25s.

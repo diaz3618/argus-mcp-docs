@@ -1,0 +1,86 @@
+---
+title: "SSE Transport"
+description: "Server-Sent Events (SSE) transport mode for connecting MCP clients to the Argus gateway."
+---
+
+The SSE (Server-Sent Events) transport is the default and most widely supported transport for MCP clients. It uses a persistent HTTP connection for server-to-client streaming and a separate POST endpoint for client-to-server messages.
+
+## Server Endpoints
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/sse` | `GET` | Opens the SSE stream for server-to-client messages |
+| `/messages/` | `POST` | Accepts client-to-server MCP messages |
+
+## Server Configuration
+
+Set SSE as the primary advertised transport in your config:
+
+```yaml
+server:
+  host: "127.0.0.1"
+  port: 9000
+  transport: sse
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `host` | string | `"127.0.0.1"` | Bind address |
+| `port` | integer | `9000` | Listen port (1-65535) |
+| `transport` | string | `"sse"` | Primary transport: `"sse"` or `"streamable-http"` |
+
+## SSE Backend Connections
+
+Argus can also connect to remote MCP servers over SSE as a backend. This is useful for integrating with remote or third-party MCP services.
+
+```yaml
+backends:
+  remote-sse:
+    type: sse
+    url: "http://remote-host:8080/sse"
+    headers:
+      X-Custom: "value"
+    auth:
+      type: static
+      headers:
+        Authorization: "Bearer ${API_TOKEN}"
+    group: remote
+```
+
+### Backend Configuration Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `type` | `"sse"` | -- | **Required** |
+| `url` | string | -- | **Required.** SSE endpoint URL (must start with `http://` or `https://`) |
+| `command` | string | `null` | Optional local process to launch before connecting |
+| `args` | list | `[]` | Process arguments |
+| `env` | map | `null` | Process environment |
+| `headers` | map | `null` | Extra HTTP headers (values support `${ENV_VAR}`) |
+| `auth` | object | `null` | Outgoing auth config |
+| `group` | string | `"default"` | Logical server group |
+| `timeouts` | object | defaults | Connection timeouts |
+| `filters` | object | defaults | Capability filters |
+| `tool_overrides` | map | `{}` | Per-tool name/description overrides |
+
+### SSE Startup Timeout
+
+When an SSE backend launches a local process (via the optional `command` field), Argus waits for it to become ready:
+
+```yaml
+timeouts:
+  sse_startup: 5   # seconds to wait for local SSE process
+```
+
+## Starting the Server in SSE Mode
+
+```bash
+# Default (SSE is the default transport)
+argus-mcp server
+
+# Explicit host/port
+argus-mcp server --host 0.0.0.0 --port 8080
+
+# Verbose startup to see backend connection progress
+argus-mcp server -v
+```

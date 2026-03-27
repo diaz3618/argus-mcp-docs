@@ -1,0 +1,30 @@
+---
+title: "Getting Started"
+description: "Get up and running with Argus MCP - prerequisites, installation, and your first server."
+---
+
+Argus MCP is a gateway server that aggregates multiple MCP backends behind a single endpoint. This guide walks you through installing the packages, starting your first server, and connecting a client.
+
+## Prerequisites
+
+- **Python 3.10+** (3.12 or 3.13 recommended)
+- **[uv](https://docs.astral.sh/uv/)** (recommended) or pip
+- **Go 1.25+** — only needed if you want to build the `argusd` daemon
+
+## Package Overview
+
+Argus ships as three packages that can be installed independently:
+
+| Package | Language | Description |
+|---------|----------|-------------|
+| **argus-mcp** | Python | The MCP gateway server — aggregates backends, exposes SSE / Streamable HTTP transports, management API, and a built-in TUI. |
+| **argus-cli** | Python | Interactive client CLI and REPL for managing a running Argus server. Ships the `argus` and `argus-tui` commands. |
+| **argusd** | Go | Lightweight sidecar daemon for Docker and Kubernetes management over a Unix Domain Socket. |
+
+Only `argus-mcp` is required. Install the other packages when you need them.
+
+## What's Next?
+
+- [Installation](/docs/getting-started/installation) — Install from PyPI or from source
+- [Quick Start](/docs/getting-started/quick-start) — Configure and launch your first server
+- [Concepts](/docs/getting-started/concepts) — Understand backends, the gateway, and the middleware pipeline

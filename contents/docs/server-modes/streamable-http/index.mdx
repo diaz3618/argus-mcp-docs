@@ -1,0 +1,98 @@
+---
+title: "Streamable HTTP Transport"
+description: "Streamable HTTP transport mode for bidirectional MCP communication over standard HTTP."
+---
+
+The Streamable HTTP transport is the newer MCP transport protocol that provides full bidirectional communication over standard HTTP methods. It supports GET, POST, and DELETE operations on a single `/mcp` endpoint.
+
+## Server Endpoint
+
+| Endpoint | Methods | Purpose |
+|----------|---------|---------|
+| `/mcp` | `GET`, `POST`, `DELETE` | Streamable HTTP transport for MCP clients |
+
+## Server Configuration
+
+Set Streamable HTTP as the primary advertised transport in your config:
+
+```yaml
+server:
+  host: "127.0.0.1"
+  port: 9000
+  transport: streamable-http
+```
+
+<Note>
+Both SSE and Streamable HTTP transports are always available regardless of the `transport` setting. The setting only controls which is advertised as primary.
+</Note>
+
+## Streamable HTTP Backend Connections
+
+Argus can connect to remote MCP servers using the Streamable HTTP transport as a backend. This transport supports advanced authentication methods including OAuth2 and PKCE.
+
+### Basic Configuration
+
+```yaml
+backends:
+  remote-http:
+    type: streamable-http
+    url: "http://remote-host:8080/mcp"
+    headers:
+      X-Custom: "value"
+    group: remote
+```
+
+### With OAuth2 Authentication
+
+```yaml
+backends:
+  remote-http:
+    type: streamable-http
+    url: "http://remote-host:8080/mcp"
+    auth:
+      type: oauth2
+      token_url: "https://auth.example.com/token"
+      client_id: "argus"
+      client_secret: "${OAUTH_SECRET}"
+      scopes: ["mcp:read", "mcp:write"]
+```
+
+### With PKCE (Browser-Based Login)
+
+```yaml
+backends:
+  remote-http:
+    type: streamable-http
+    url: "https://mcp.example.com/mcp"
+    auth:
+      type: pkce
+      authorization_endpoint: "https://auth.example.com/authorize"
+      token_endpoint: "https://auth.example.com/token"
+      client_id: "my-client"
+      scopes: ["openid"]
+```
+
+### Backend Configuration Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `type` | `"streamable-http"` | -- | **Required** |
+| `url` | string | -- | **Required.** HTTP endpoint URL |
+| `headers` | map | `null` | Extra HTTP headers |
+| `auth` | object | `null` | Outgoing auth config |
+| `group` | string | `"default"` | Logical server group |
+| `timeouts` | object | defaults | Connection timeouts |
+| `filters` | object | defaults | Capability filters |
+| `tool_overrides` | map | `{}` | Per-tool name/description overrides |
+
+## Starting the Server
+
+```bash
+# Start with streamable-http as primary transport
+argus-mcp server --config config.yaml
+
+# With auto-reauth for OAuth backends
+argus-mcp server --auto-reauth
+```
+
+The `--auto-reauth` flag is particularly useful with Streamable HTTP backends that use OAuth2 or PKCE authentication, as it automatically opens the browser for re-authentication when a refresh token expires or is revoked.

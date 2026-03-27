@@ -1,0 +1,44 @@
+---
+title: "Server Modes"
+description: "Overview of the transport modes supported by the Argus MCP gateway server."
+---
+
+Argus MCP exposes its gateway over multiple transport protocols so that any MCP-compatible client can connect in the way that best fits its deployment model.
+
+## Supported Transports
+
+| Transport | Type | Endpoint | Use Case |
+|-----------|------|----------|----------|
+| [SSE](/docs/server-modes/sse) | `sse` | `GET /sse`, `POST /messages/` | Browser-friendly streaming; widely supported by existing MCP clients |
+| [Stdio](/docs/server-modes/stdio) | `stdio` | stdin / stdout | Local process communication; used for backend MCP servers launched as child processes |
+| [Streamable HTTP](/docs/server-modes/streamable-http) | `streamable-http` | `GET\|POST\|DELETE /mcp` | Newer MCP transport with full bidirectional HTTP semantics |
+
+## Choosing a Transport
+
+The `server.transport` config key controls which transport is **advertised as primary**, but both SSE and Streamable HTTP endpoints are always available regardless of the setting.
+
+```yaml
+server:
+  host: "127.0.0.1"
+  port: 9000
+  transport: sse   # "sse" or "streamable-http"
+```
+
+<Note>
+Both SSE and Streamable HTTP transports are always available regardless of the `transport` setting. The setting only controls which is advertised as primary.
+</Note>
+
+## Starting the Server
+
+```bash
+# Start with defaults (localhost:9000, auto-detect config)
+argus-mcp server
+
+# Custom host and port
+argus-mcp server --host 0.0.0.0 --port 8080
+
+# Explicit config file
+argus-mcp server --config /etc/argus-mcp/production.yaml
+```
+
+See the individual transport pages for protocol-specific details and configuration options.
