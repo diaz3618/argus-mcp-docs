@@ -1,0 +1,79 @@
+---
+title: "Config Sync"
+description: "Hot-reload and change detection for zero-downtime configuration updates in Argus MCP."
+---
+
+Config Sync watches the configuration file for changes and automatically reloads backends, middleware, and the tool catalog without restarting the server. This enables zero-downtime configuration updates.
+
+## How It Works
+
+### Poll-Based Detection
+
+The `ConfigWatcher` uses `os.stat()` polling with a configurable interval (default: 2 seconds). When the file's modification time changes:
+
+1. A **debounce window** (default: 1 second) opens to collapse rapid saves from editors that perform multiple writes.
+2. After the debounce period, if no further changes are detected, the `on_change` async callback fires.
+3. The callback triggers `ArgusService.reload()`, which re-reads the config, reconciles backend connections, and rebuilds the tool catalog.
+
+```
+os.stat(config.yaml)
+  │
+  ├─ mtime unchanged → sleep → poll again
+  │
+  └─ mtime changed → debounce (1s) → on_change() → service.reload()
+```
+
+### Detection Methods
+
+The current implementation uses **mtime** comparison. The TUI settings panel shows three options that represent the planned detection spectrum:
+
+| Method | Description | Overhead |
+|--------|-------------|----------|
+| **mtime** | Compare `os.stat().st_mtime` (current implementation) | Minimal |
+| **hash** | SHA-256 of file contents -- catches changes even if mtime is unreliable (NFS) | Low |
+| **inotify** | OS-level file event notifications (Linux `inotify`, macOS `FSEvents`) | Near-zero |
+
+For most deployments, mtime is sufficient. Hash-based detection is recommended for network file systems. Inotify support would require the `watchdog` library.
+
+### Debounce and Failure Handling
+
+| Scenario | Behavior |
+|----------|----------|
+| Rapid successive edits | Debounce collapses them -- only one reload fires |
+| Reload callback raises an exception | Error is logged, watcher continues polling |
+| Config file temporarily missing | Stat returns `0.0` -- treated as "no change" |
+
+## Configuration
+
+```yaml
+sync:
+  enabled: true
+  poll_interval: 2.0
+  debounce: 1.0
+  detection: mtime
+  on_failure: backoff
+```
+
+### Config Fields
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `enabled` | boolean | `true` | Enable or disable config watching |
+| `poll_interval` | float | `2.0` | Seconds between file stat checks |
+| `debounce` | float | `1.0` | Seconds to wait after a change before triggering reload |
+| `detection` | string | `"mtime"` | Detection method: `"mtime"`, `"hash"`, or `"inotify"` |
+| `on_failure` | string | `"backoff"` | Failure strategy: `"backoff"`, `"fixed"`, or `"stop"` |
+
+## Implementation Status
+
+| Component | File | Status |
+|-----------|------|--------|
+| `ConfigWatcher` | `argus_mcp/config/watcher.py` | **Implemented** -- poll-based async file watcher with debounce |
+| `ArgusService` integration | `argus_mcp/runtime/service.py` | **Implemented** -- watcher started after service reaches RUNNING state |
+| `SyncStatusWidget` (TUI) | `argus_mcp/tui/widgets/sync_status.py` | **UI only** -- renders status line + event log table, but no data flows to it yet |
+| `SyncConfigPanel` (TUI) | `argus_mcp/tui/widgets/sync_status.py` | **UI only** -- settings form with no persistence |
+| Config schema fields | -- | **Not wired** -- no `sync:` section in `ArgusConfig` yet |
+
+<Note>
+The backend watcher logic is solid and production-ready. Two gaps remain: configuration schema integration and TUI data binding.
+</Note>

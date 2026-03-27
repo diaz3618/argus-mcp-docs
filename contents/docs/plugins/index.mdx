@@ -1,0 +1,13 @@
+---
+title: "Plugins"
+description: "Composable plugin framework for intercepting and transforming MCP requests in Argus."
+---
+
+Argus MCP includes a composable plugin framework that intercepts MCP requests at well-defined hook points. Plugins run inside the middleware chain and process every request in priority order.
+
+The plugin system ships with eight built-in plugins for common tasks like secrets detection, rate limiting, and response caching. You can also write your own plugins or integrate with external policy engines.
+
+## In This Section
+
+- [Overview](/docs/plugins/overview) -- How the plugin system works, hook points, execution modes, configuration, and writing custom plugins.
+- [Built-in Plugins](/docs/plugins/built-in-plugins) -- Reference for all eight built-in plugins that ship with Argus MCP.

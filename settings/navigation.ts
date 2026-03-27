@@ -6,12 +6,21 @@ export const Navigations = [
     href: `/docs${PageRoutes[0].href}`,
   },
   {
-    title: 'Rubix',
-    href: 'https://rubixstudios.com.au',
+    title: 'YAML Cookbook',
+    href: '/docs/yaml-cookbook',
+  },
+  {
+    title: 'GitHub',
+    href: 'https://github.com/diaz3618/argus-mcp',
+    external: true,
+  },
+  {
+    title: 'Catalog',
+    href: 'https://github.com/diaz3618/argus-mcp-catalog',
     external: true,
   },
 ]
 
 export const GitHubLink = {
-  href: 'https://github.com/rubixvi/rubix-documents',
+  href: 'https://github.com/diaz3618/argus-mcp',
 }

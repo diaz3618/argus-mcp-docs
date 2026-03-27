@@ -1,0 +1,33 @@
+---
+title: "Authorization (RBAC)"
+description: "Security perspective on Argus MCP Role-Based Access Control — policy evaluation and access control patterns."
+---
+
+Authorization is the second security layer in Argus MCP. After authentication identifies who the caller is, RBAC policies determine what they can do.
+
+## How It Works
+
+Every MCP operation (tool call, prompt fetch, resource read) is evaluated against a set of policies. Each policy matches on role, resource type, resource name, and action, then returns `allow` or `deny`.
+
+| Component | Purpose |
+|-----------|---------|
+| **Role** | Assigned to authenticated identities (from JWT claims, OIDC groups, or config) |
+| **Resource** | The target — `tool:*`, `prompt:summarize`, `resource:data/*` |
+| **Action** | `call`, `read`, `list`, or `*` |
+| **Effect** | `allow` or `deny` (deny takes precedence) |
+
+<Note>
+For the full configuration reference including policy syntax, resource identifiers, evaluation logic, role sources, and examples, see [Configuration — Authorization](/docs/configuration/authorization).
+</Note>
+
+## Common Patterns
+
+- **Admin-only tools**: Allow `role: admin` on `tool:*`, deny all others
+- **Read-only viewers**: Allow `role: viewer` with `action: [read, list]`, deny `call`
+- **Deny dangerous tools**: Explicit `deny` on `tool:exec`, `tool:shell` for all roles
+
+## Recommendations
+
+- Start with a default-deny posture and explicitly allow needed operations
+- Use the `deny` effect sparingly — it overrides all `allow` rules for the same resource
+- Monitor denied operations in the [Audit log](/docs/audit/overview) to detect misconfigured policies

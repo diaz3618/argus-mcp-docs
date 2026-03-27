@@ -1,0 +1,203 @@
+---
+title: "Backends"
+description: "Configure backend MCP server connections including stdio, SSE, and streamable-http transports, with timeouts, filters, and tool overrides."
+---
+
+Backends are named MCP server connections defined in the `backends` map. Each backend has a `type` that determines its connection method.
+
+## Stdio Backend
+
+Launches a local process and communicates via stdin/stdout.
+
+```yaml
+backends:
+  my-local-tool:
+    type: stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-everything"]
+    env:
+      NODE_ENV: production
+    group: tools
+    timeouts:
+      init: 30
+    filters:
+      tools:
+        allow: ["search_*"]
+        deny: ["dangerous_*"]
+    tool_overrides:
+      old_name:
+        name: new_name
+        description: "Custom description"
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `type` | `"stdio"` | -- | **Required** |
+| `command` | string | -- | **Required.** Executable to launch |
+| `args` | list | `[]` | Command arguments |
+| `env` | map | `null` | Environment variables for the process |
+| `group` | string | `"default"` | Logical server group |
+| `timeouts` | object | defaults | Connection timeouts |
+| `filters` | object | defaults | Capability filters |
+| `tool_overrides` | map | `{}` | Per-tool name/description overrides |
+
+<Note>
+Stdio backends are automatically wrapped in container isolation when a supported runtime (Docker or Podman) is detected. See [Container Isolation](/docs/configuration/container-isolation) for details.
+</Note>
+
+## SSE Backend
+
+Connects to a remote MCP server via Server-Sent Events.
+
+```yaml
+backends:
+  remote-sse:
+    type: sse
+    url: "http://remote-host:8080/sse"
+    headers:
+      X-Custom: "value"
+    auth:
+      type: static
+      headers:
+        Authorization: "Bearer ${API_TOKEN}"
+    group: remote
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `type` | `"sse"` | -- | **Required** |
+| `url` | string | -- | **Required.** SSE endpoint URL (must start with `http://` or `https://`) |
+| `command` | string | `null` | Optional local process to launch before connecting |
+| `args` | list | `[]` | Process arguments |
+| `env` | map | `null` | Process environment |
+| `headers` | map | `null` | Extra HTTP headers (values support `${ENV_VAR}`) |
+| `auth` | object | `null` | Outgoing auth config |
+| `group` | string | `"default"` | Logical server group |
+| `timeouts` | object | defaults | Connection timeouts |
+| `filters` | object | defaults | Capability filters |
+| `tool_overrides` | map | `{}` | Per-tool name/description overrides |
+
+## Streamable HTTP Backend
+
+Connects via the newer MCP Streamable HTTP transport.
+
+```yaml
+backends:
+  remote-http:
+    type: streamable-http
+    url: "http://remote-host:8080/mcp"
+    auth:
+      type: oauth2
+      token_url: "https://auth.example.com/token"
+      client_id: "argus"
+      client_secret: "${OAUTH_SECRET}"
+      scopes: ["mcp:read", "mcp:write"]
+```
+
+Or using PKCE for browser-based login:
+
+```yaml
+backends:
+  remote-http:
+    type: streamable-http
+    url: "https://mcp.example.com/mcp"
+    auth:
+      type: pkce
+      authorization_endpoint: "https://auth.example.com/authorize"
+      token_endpoint: "https://auth.example.com/token"
+      client_id: "my-client"
+      scopes: ["openid"]
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `type` | `"streamable-http"` | -- | **Required** |
+| `url` | string | -- | **Required.** HTTP endpoint URL |
+| `headers` | map | `null` | Extra HTTP headers |
+| `auth` | object | `null` | Outgoing auth config |
+| `group` | string | `"default"` | Logical server group |
+| `timeouts` | object | defaults | Connection timeouts |
+| `filters` | object | defaults | Capability filters |
+| `tool_overrides` | map | `{}` | Per-tool name/description overrides |
+
+## Common Backend Options
+
+### Timeouts
+
+```yaml
+timeouts:
+  init: 30        # MCP session initialization (seconds)
+  cap_fetch: 10   # Capability list fetch (seconds)
+  sse_startup: 5  # Wait for local SSE process to start (seconds)
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `init` | float | `null` (global default: 15s) | MCP session init timeout |
+| `cap_fetch` | float | `null` (global default: 10s) | Capability fetch timeout |
+| `sse_startup` | float | `null` (global default: 5s) | Local SSE process startup wait |
+
+### Filters
+
+Glob-based allow/deny lists for capability names. Applied per capability type. Deny takes precedence over allow.
+
+```yaml
+filters:
+  tools:
+    allow: ["search_*", "read_*"]
+    deny: ["dangerous_tool"]
+  resources:
+    allow: ["*"]
+  prompts:
+    deny: ["internal_*"]
+```
+
+### Tool Overrides
+
+Rename or re-describe specific tools before they are exposed to clients:
+
+```yaml
+tool_overrides:
+  original_tool_name:
+    name: better_name
+    description: "A clearer description of what this tool does"
+```
+
+## Startup Concurrency and Stagger
+
+Argus limits how many backends initialize simultaneously to prevent resource contention (npm/pip package cache lock fights, network saturation, CPU spikes on cold starts).
+
+| Constant | Default | Description |
+|----------|---------|-------------|
+| `STARTUP_CONCURRENCY` | `4` | Max simultaneous backend initializations |
+| `STARTUP_STAGGER_DELAY` | `0.5 s` | Delay between launching each backend within a batch |
+
+These are tunable via environment variables:
+
+```bash
+# Allow more parallel connections on a powerful host
+ARGUS_STARTUP_CONCURRENCY=8 argus-mcp server
+
+# Increase stagger to ease network pressure
+ARGUS_STARTUP_STAGGER_DELAY=1.0 argus-mcp server
+```
+
+## Backend Retry
+
+When a backend fails to initialize, Argus retries automatically with exponential back-off.
+
+| Constant | Default | Description |
+|----------|---------|-------------|
+| `BACKEND_RETRIES` | `3` | Number of retry attempts after initial failure |
+| `BACKEND_RETRY_DELAY` | `5.0 s` | Base delay before first retry |
+| `BACKEND_RETRY_BACKOFF` | `1.5x` | Multiplier applied to delay on each successive retry |
+
+Example retry schedule (defaults): 5 s, 7.5 s, 11.25 s.
+
+Tunable via environment variables:
+
+```bash
+ARGUS_BACKEND_RETRIES=5
+ARGUS_BACKEND_RETRY_DELAY=10.0
+ARGUS_BACKEND_RETRY_BACKOFF=2.0
+```

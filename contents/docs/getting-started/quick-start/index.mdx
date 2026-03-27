@@ -1,0 +1,245 @@
+---
+title: "Quick Start"
+description: "Create a config, start the Argus MCP server, connect a client, and explore the TUI and management API."
+---
+
+## 1. Create a Config File
+
+Argus looks for config files in this order:
+`config.yaml` then `config.yml`
+
+If you cloned the repository, copy the example:
+
+```bash
+cp example_config.yaml config.yaml
+```
+
+Otherwise, create a `config.yaml` in your working directory.
+A minimal config with one stdio backend:
+
+```yaml
+version: "1"
+
+server:
+  host: "127.0.0.1"
+  port: 9000
+
+backends:
+  my-tool-server:
+    type: stdio
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-everything"]
+```
+
+See [Configuration](/docs/configuration) for the full reference.
+
+<Note>
+**Container isolation**: When Docker or Podman is available on the host,
+Argus automatically builds and runs each stdio backend inside a hardened
+container. No extra config is needed — it happens transparently at startup.
+See [Configuration — Container Isolation](/docs/configuration#automatic-container-isolation)
+for details.
+</Note>
+
+## 2. Start the Server
+
+```bash
+argus-mcp server
+```
+
+The server starts on `http://127.0.0.1:9000` by default. Override with flags:
+
+```bash
+argus-mcp server --host 0.0.0.0 --port 8080 --log-level debug
+```
+
+Or point to a specific config file:
+
+```bash
+argus-mcp server --config /path/to/my-config.yaml
+```
+
+Use `-v` to see backend connection progress during startup, or `-vv` for
+full subprocess output:
+
+```bash
+argus-mcp server -v
+```
+
+### Pre-building Container Images
+
+When container isolation is enabled (the default), each stdio backend's
+container image is built on first startup. To avoid this latency, pre-build
+all images:
+
+```bash
+argus-mcp build
+```
+
+## 3. Connect an MCP Client
+
+Point any MCP-compatible client at one of the Argus transport endpoints:
+
+| Transport | URL |
+|-----------|-----|
+| SSE | `http://127.0.0.1:9000/sse` |
+| Streamable HTTP | `http://127.0.0.1:9000/mcp` |
+
+Example — Claude Desktop (`claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "argus": {
+      "url": "http://127.0.0.1:9000/sse"
+    }
+  }
+}
+```
+
+## 4. Launch the TUI
+
+In a separate terminal, connect the interactive TUI to the running server:
+
+```bash
+argus-mcp tui
+```
+
+Or connect to a remote server:
+
+```bash
+argus-mcp tui --server http://192.168.1.100:9000
+```
+
+### Multi-Server TUI
+
+The TUI supports connecting to multiple Argus instances. Create a
+servers config file at `~/.config/argus-mcp/servers.json`:
+
+```json
+{
+  "servers": [
+    {
+      "name": "local",
+      "url": "http://127.0.0.1:9000"
+    },
+    {
+      "name": "staging",
+      "url": "http://staging.example.com:9000",
+      "token": "staging-token"
+    }
+  ],
+  "active": "local"
+}
+```
+
+```bash
+argus-mcp tui --servers-config ~/.config/argus-mcp/servers.json
+```
+
+## 5. Use the Management API
+
+The management API is available at `/manage/v1/`:
+
+```bash
+# Health check (always public)
+curl http://127.0.0.1:9000/manage/v1/health
+
+# List backends
+curl http://127.0.0.1:9000/manage/v1/backends
+
+# List capabilities
+curl http://127.0.0.1:9000/manage/v1/capabilities
+
+# Hot-reload config
+curl -X POST http://127.0.0.1:9000/manage/v1/reload
+```
+
+If a management token is configured, include the `Authorization` header:
+
+```bash
+curl -H "Authorization: Bearer $ARGUS_MGMT_TOKEN" \
+     http://127.0.0.1:9000/manage/v1/status
+```
+
+## 6. Use the argus Client CLI
+
+With the server running, use the `argus` client for one-shot commands or an
+interactive REPL session:
+
+```bash
+# One-shot commands
+argus backends list
+argus tools list --output json
+argus health status
+
+# Connect to a specific server
+argus -s http://192.168.1.100:9000 backends list
+```
+
+Start the interactive REPL (tab completion, history, status toolbar):
+
+```bash
+argus
+```
+
+Or launch the enhanced TUI directly:
+
+```bash
+argus-tui
+```
+
+## 7. Run argusd (optional)
+
+If you need Docker container or Kubernetes pod management from the CLI,
+start the `argusd` daemon. Download the binary from
+[GitHub Releases](https://github.com/diaz3618/argus-mcp/releases) or
+build from source:
+
+```bash
+# From a cloned repo
+cd packages/argusd && make run
+
+# Or run a pre-built binary directly
+./argusd
+```
+
+The daemon exposes a local HTTP API over a Unix Domain Socket. The `argus`
+client commands `argus containers` and `argus pods` communicate with it
+automatically when the socket is available.
+
+## Process Management
+
+Check running Argus server sessions:
+
+```bash
+argus-mcp status
+```
+
+Stop a running server (works with detached mode):
+
+```bash
+# Stop the default session
+argus-mcp stop
+
+# Stop a named session
+argus-mcp stop my-session
+
+# Stop all running sessions
+argus-mcp stop --all
+
+# Force stop (SIGKILL)
+argus-mcp stop --force
+```
+
+## Cleanup
+
+Remove containers and images created by Argus:
+
+```bash
+# Remove containers only
+argus-mcp clean
+
+# Remove everything (containers + images + network)
+argus-mcp clean --all
+```

@@ -1,0 +1,56 @@
+---
+title: "YAML Cookbook"
+description: "Pre-tested Argus MCP backend configurations organized by use case."
+---
+
+The YAML Cookbook is a collection of ready-to-use backend configurations for Argus MCP. Each recipe is a tested `config.yaml` snippet that you can copy into your own configuration.
+
+## Categories
+
+| Category | Description |
+|---|---|
+| [Filesystem Access](/docs/yaml-cookbook/filesystem-access) | Servers that read/write files and Git repos |
+| [Web Research](/docs/yaml-cookbook/web-research) | Fetch, browse, and search the web |
+| [Databases](/docs/yaml-cookbook/databases) | PostgreSQL, SQLite, and other data stores |
+| [AI Memory](/docs/yaml-cookbook/ai-memory) | Persistent memory and knowledge graphs |
+| [DevOps Integrations](/docs/yaml-cookbook/devops-integrations) | GitHub, CI/CD, and infrastructure tools |
+| [Security Tools](/docs/yaml-cookbook/security-tools) | SAST, DAST, and vulnerability scanning |
+| [Remote SSE](/docs/yaml-cookbook/remote-sse) | SSE-based remote backends |
+| [Remote HTTP](/docs/yaml-cookbook/remote-http) | Streamable HTTP remote backends |
+| [Remote Auth](/docs/yaml-cookbook/remote-auth) | Remote backends requiring authentication (OAuth/PKCE) |
+| [Fully Isolated](/docs/yaml-cookbook/fully-isolated) | Minimal network, maximum isolation |
+
+## How It Works
+
+Configurations are maintained in the [argus-mcp-catalog](https://github.com/diaz3618/argus-mcp-catalog) repository. When a new configuration is merged, the docs site automatically rebuilds to include it.
+
+## Using a Recipe
+
+Copy the YAML block into the `backends` section of your `config.yaml`:
+
+```yaml
+backends:
+  # paste the recipe here
+  filesystem:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-filesystem", "/projects"]
+    container:
+      enabled: true
+      volumes: ["$HOME/projects:/projects"]
+```
+
+Then start Argus:
+
+```bash
+argus-mcp server --config config.yaml
+```
+
+## Contributing
+
+Have a working backend configuration? Contributions are welcome.
+
+1. Fork [argus-mcp-catalog](https://github.com/diaz3618/argus-mcp-catalog)
+2. Add your YAML file to the appropriate `configs/<category>/` directory
+3. Open a pull request
+
+See the [Contributing Guide](https://github.com/diaz3618/argus-mcp-catalog/blob/main/CONTRIBUTING.md) for details.

@@ -1,0 +1,59 @@
+---
+title: "Concepts"
+description: "Core concepts behind Argus MCP - the gateway model, backends, transports, and middleware pipeline."
+---
+
+## What is Argus MCP?
+
+Argus MCP is a **gateway server** for the Model Context Protocol (MCP). Instead of connecting your AI client directly to each MCP tool server, you point the client at a single Argus endpoint. Argus handles discovery, routing, and lifecycle management for all of your backends.
+
+## Backends
+
+A **backend** is any MCP-compliant tool server that Argus connects to. Backends can communicate over different transports:
+
+- **stdio** — Argus spawns the backend as a child process and communicates over stdin/stdout. This is the most common type for local tool servers.
+- **SSE** — Argus connects to an already-running backend over Server-Sent Events.
+- **Streamable HTTP** — Argus connects to a backend using the newer Streamable HTTP transport.
+
+You declare backends in `config.yaml`. Argus connects to all of them at startup and aggregates their tools, resources, and prompts into a single namespace.
+
+## The Gateway
+
+The gateway is the core of Argus. It sits between your MCP client and the backends, providing:
+
+- **Aggregation** — All tools from all backends appear as a single flat list to the client.
+- **Transport bridging** — The client connects over SSE or Streamable HTTP regardless of how each backend communicates.
+- **Hot reload** — Add, remove, or reconfigure backends without restarting the server.
+- **Health monitoring** — Argus tracks the health of each backend and can surface status through the management API and TUI.
+
+## Middleware Pipeline
+
+Every request that flows through Argus passes through a **middleware pipeline**. Middleware can inspect, transform, or reject requests before they reach a backend. Built-in middleware includes:
+
+- **Authentication** — Validate client tokens (Bearer, API key, or custom headers).
+- **Rate limiting** — Per-client or global rate limits on tool calls.
+- **Logging and telemetry** — Structured request/response logging with OpenTelemetry integration.
+- **RBAC** — Role-based access control that restricts which tools a client can invoke.
+
+Middleware is configured declaratively in `config.yaml` and executes in the order it is declared.
+
+## Container Isolation
+
+When Docker or Podman is available, Argus can automatically run each stdio backend inside a **hardened container**. This provides:
+
+- **Sandboxing** — Each backend runs in its own isolated filesystem and network namespace.
+- **Reproducibility** — Container images are built from the backend's declared dependencies.
+- **Zero config** — Isolation is enabled by default when a container runtime is detected.
+
+## Management API and TUI
+
+Argus exposes a **management REST API** at `/manage/v1/` for programmatic control: listing backends, checking health, hot-reloading config, and more.
+
+The **TUI** (Terminal User Interface) provides a visual dashboard for monitoring backends, inspecting tools, and invoking tool calls interactively. It connects to the management API over HTTP, so it can run locally or against a remote Argus instance.
+
+## Next Steps
+
+- [Installation](/docs/getting-started/installation) — Install the packages
+- [Quick Start](/docs/getting-started/quick-start) — Launch your first server
+- [Configuration](/docs/configuration) — Full config reference
+- [Architecture](/docs/architecture) — Deep dive into how Argus works

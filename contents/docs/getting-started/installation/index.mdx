@@ -1,0 +1,81 @@
+---
+title: "Installation"
+description: "Install Argus MCP packages from PyPI or build from source."
+---
+
+## From PyPI (recommended)
+
+Both Python packages are published to PyPI and can be installed without cloning the repository.
+
+### argus-mcp (server)
+
+```bash
+# uv — isolated, auto-managed (recommended)
+uv tool install argus-mcp
+
+# pipx — same isolation, more established
+pipx install argus-mcp
+
+# pip — installs into current environment
+pip install argus-mcp
+```
+
+Verify:
+
+```bash
+argus-mcp --help
+```
+
+### argus-cli (client)
+
+```bash
+# uv
+uv tool install argus-cli
+
+# With the optional TUI
+uv tool install "argus-cli[tui]"
+
+# pipx
+pipx install argus-cli
+
+# pip
+pip install argus-cli
+```
+
+Verify:
+
+```bash
+argus --help
+```
+
+### argusd (Go daemon)
+
+`argusd` is a Go binary — download a pre-built release from
+[GitHub Releases](https://github.com/diaz3618/argus-mcp/releases), or
+build from source (see below).
+
+## From Source
+
+Clone the repository to install everything together, or to work on
+development:
+
+```bash
+git clone https://github.com/diaz3618/argus-mcp.git
+cd argus-mcp
+
+# Install argus-mcp with all dev dependencies
+uv sync --group dev
+
+# Install argus-cli from its sub-package
+uv pip install -e packages/argus_cli
+
+# With TUI support
+uv pip install -e "packages/argus_cli[tui]"
+
+# Build argusd (requires Go 1.25+)
+cd packages/argusd && make build && cd ../..
+```
+
+<Note>
+The argusd daemon is an optional Go-based component that provides container lifecycle management and health monitoring. See the main [Argus MCP repository](https://github.com/diaz3618/argus-mcp) for argusd configuration and deployment details.
+</Note>
