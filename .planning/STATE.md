@@ -4,12 +4,12 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 1
 status: Executing Phase 04
-last_updated: "2026-03-29T15:19:56.507Z"
+last_updated: "2026-03-29T15:22:14.726Z"
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 11
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -54,6 +54,8 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 - [Phase 04-documentation-accuracy]: Plugin setting names corrected to match Python source: window_seconds, cooldown_seconds, backoff_factor, ttl_seconds, max_entries
 - [Phase 04-documentation-accuracy]: All 6 TimeoutConfig fields now documented in backends/index.mdx: init, cap_fetch, sse_startup, startup, retries, retry_delay
 - [Phase 04-documentation-accuracy]: 04-03: Field names, types, defaults sourced from Pydantic models — no invented fields. Constraint ranges in Description column.
+- [Phase 04-documentation-accuracy]: Skills and Workflows overview pages already met reference depth — only additive changes made for missing pieces
+- [Phase 04-documentation-accuracy]: Added management API routes (/manage/v1/skills/{name}/enable|disable) to skills lifecycle section — verified in router.py
 
 ## Performance Metrics
 
@@ -67,6 +69,7 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 | Phase 04-documentation-accuracy P02 | 2min | 2 tasks | 1 files |
 | Phase 04-documentation-accuracy P01 | 2min | 2 tasks | 2 files |
 | Phase 04-documentation-accuracy P03 | 6min | 2 tasks | 7 files |
+| Phase 04-documentation-accuracy P04 | 10min | 2 tasks | 2 files |
 
 ## Key Context
 
