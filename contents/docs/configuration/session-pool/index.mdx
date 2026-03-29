@@ -1,0 +1,31 @@
+---
+title: "Session Pool"
+description: "Configure MCP session pooling to reuse backend connections and reduce reconnect overhead."
+---
+
+The `session_pool` section controls pooling of `ClientSession` objects. When a backend transport is still healthy, Argus reuses an existing session from the pool rather than paying the full reconnect cost. Pooling is keyed on the `(url, identity, transport)` tuple — each unique combination gets its own pool.
+
+```yaml
+session_pool:
+  enabled: true
+  per_key_max: 4
+  ttl: 300
+  circuit_breaker_threshold: 3
+```
+
+A tuned example for high-concurrency deployments:
+
+```yaml
+session_pool:
+  enabled: true
+  per_key_max: 16
+  ttl: 600
+  circuit_breaker_threshold: 5
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `enabled` | bool | `true` | Enable MCP session pooling. Set to `false` to force a fresh session on every request. |
+| `per_key_max` | int | `4` | Maximum pooled sessions per `(url, identity, transport)` key. Range: 1–64. |
+| `ttl` | float | `300.0` | Time-to-live in seconds for idle pooled sessions. Idle sessions beyond this age are evicted. Range: 10–3600. |
+| `circuit_breaker_threshold` | int | `3` | Consecutive failures before the pool circuit breaker opens for a key. Once open, new sessions are created until the key recovers. Range: 1–50. |

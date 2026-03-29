@@ -1,0 +1,41 @@
+---
+title: "Retry"
+description: "Configure automatic HTTP retry with exponential backoff for retryable errors (429, 502, 503, 504, 408)."
+---
+
+The `retry` section controls automatic retry behavior for HTTP requests that fail with retryable status codes. Argus retries on: **429** (Too Many Requests), **502** (Bad Gateway), **503** (Service Unavailable), **504** (Gateway Timeout), and **408** (Request Timeout).
+
+```yaml
+retry:
+  enabled: true
+  max_retries: 3
+  base_delay: 1.0
+  backoff_factor: 2.0
+  max_delay: 60.0
+  jitter: 0.5
+```
+
+An aggressive retry example for unreliable upstream backends:
+
+```yaml
+retry:
+  enabled: true
+  max_retries: 5
+  base_delay: 2.0
+  backoff_factor: 2.0
+  max_delay: 120.0
+  jitter: 0.3
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `enabled` | bool | `true` | Enable automatic HTTP retry. Set to `false` to propagate errors immediately without retrying. |
+| `max_retries` | int | `3` | Maximum retry attempts per request. A value of `0` effectively disables retrying. Range: 0–10. |
+| `base_delay` | float | `1.0` | Initial delay in seconds before the first retry. Range: 0.1–30. |
+| `backoff_factor` | float | `2.0` | Multiplier applied to the delay after each retry. A value of `2.0` doubles the delay each attempt. Range: 1–10. |
+| `max_delay` | float | `60.0` | Upper bound on computed delay in seconds. Prevents indefinite backoff growth. Range: 1–300. |
+| `jitter` | float | `0.5` | Fraction of the computed delay added as random noise. `0.5` adds up to 50% of the delay as jitter, spreading retry storms. Range: 0–1. |
+
+**Delay formula:** `delay = min(base_delay * backoff_factor^attempt + uniform(0, jitter * computed_delay), max_delay)`
+
+With defaults, the retry schedule (before jitter) is approximately: 1 s, 2 s, 4 s.
