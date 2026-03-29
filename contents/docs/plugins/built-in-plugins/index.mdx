@@ -47,14 +47,14 @@ Enforces request rate limits using a sliding window counter. Rejects requests th
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
 | `max_requests` | integer | `100` | Maximum requests per window |
-| `window` | integer | `60` | Window duration in seconds |
+| `window_seconds` | integer | `60` | Window duration in seconds |
 
 ```yaml
 - name: rate_limiter
   priority: 20
   settings:
     max_requests: 100
-    window: 60
+    window_seconds: 60
 ```
 
 ## circuit_breaker
@@ -66,14 +66,14 @@ An optional Rust-accelerated state machine (`circuit_breaker_rs`) is used when t
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
 | `failure_threshold` | integer | `5` | Failures before tripping |
-| `cooldown` | integer | `30` | Seconds before reset attempt |
+| `cooldown_seconds` | float | `30.0` | Seconds before reset attempt |
 
 ```yaml
 - name: circuit_breaker
   priority: 25
   settings:
     failure_threshold: 5
-    cooldown: 30
+    cooldown_seconds: 30
 ```
 
 ## retry_with_backoff
@@ -84,7 +84,7 @@ Retries failed tool calls with exponential backoff and jitter. Only retries on t
 |---------|------|---------|-------------|
 | `max_retries` | integer | `3` | Maximum retry attempts |
 | `base_delay` | float | `1.0` | Initial delay in seconds |
-| `backoff` | float | `2.0` | Multiplier per retry |
+| `backoff_factor` | float | `2.0` | Multiplier per retry |
 | `max_delay` | float | `30.0` | Delay cap in seconds |
 
 ```yaml
@@ -93,7 +93,7 @@ Retries failed tool calls with exponential backoff and jitter. Only retries on t
   settings:
     max_retries: 3
     base_delay: 1.0
-    backoff: 2.0
+    backoff_factor: 2.0
     max_delay: 30.0
 ```
 
@@ -105,15 +105,15 @@ An optional Rust-accelerated cache key hasher (`hash_rs`) is used when available
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
-| `ttl` | integer | `300` | Cache entry time-to-live in seconds |
-| `max` | integer | `256` | Maximum cached entries |
+| `ttl_seconds` | integer | `300` | Cache entry time-to-live in seconds |
+| `max_entries` | integer | `256` | Maximum cached entries |
 
 ```yaml
 - name: response_cache_by_prompt
   priority: 30
   settings:
-    ttl: 300
-    max: 256
+    ttl_seconds: 300
+    max_entries: 256
 ```
 
 ## output_length_guard
@@ -173,19 +173,19 @@ plugins:
       priority: 20
       settings:
         max_requests: 200
-        window: 60
+        window_seconds: 60
 
     - name: circuit_breaker
       priority: 25
       settings:
         failure_threshold: 5
-        cooldown: 30
+        cooldown_seconds: 30
 
     - name: response_cache_by_prompt
       priority: 30
       settings:
-        ttl: 300
-        max: 256
+        ttl_seconds: 300
+        max_entries: 256
 
     - name: retry_with_backoff
       priority: 80
