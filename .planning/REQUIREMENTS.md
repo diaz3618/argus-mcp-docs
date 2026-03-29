@@ -33,8 +33,8 @@
 - [x] **CAT-EXP-01**: 20+ new YAML catalog configs across all existing categories, prioritizing stdio container variants that demonstrate complex patterns (volume mounts, network modes, `system_deps`, env injection with secrets)
 - [x] **CAT-EXP-02**: GitHub-only MCP server entries — servers not published to npm/PyPI, built from source using `container.source_url` + `container.build_steps` + `container.entrypoint`, or via `container.dockerfile` pointing to a custom Dockerfile in `dockerfiles/`
 - [x] **CAT-EXP-03**: If a real MCP server genuinely requires a custom Dockerfile (not expressible via `system_deps`, `source_url`, or `go_package`), add that server's `.dockerfile` co-located in `configs/{category}/` with a paired YAML using `container.dockerfile`. No demo Dockerfiles — real servers only; docs-only coverage is acceptable if no suitable candidate exists
-- [ ] **CAT-EXP-04**: All new catalog entries tested locally — each config confirmed to deploy and function correctly with argus-mcp before being added to the catalog
-- [ ] **CAT-EXP-05**: `catalog.json` updated to include all new entries across all affected categories; validated with `node scripts/lint-catalog.js` (exits 0)
+- [x] **CAT-EXP-04**: All new catalog entries tested locally — each config confirmed to deploy and function correctly with argus-mcp before being added to the catalog
+- [x] **CAT-EXP-05**: `catalog.json` updated to include all new entries across all affected categories; validated with `node scripts/lint-catalog.js` (exits 0)
 - [x] **CAT-EXP-06**: argus-mcp-docs `container-isolation` page (`contents/docs/configuration/container-isolation/index.mdx`) expanded to document all advanced `ContainerConfig` fields currently missing: `source_url`, `build_steps`, `entrypoint`, `build_env`, `source_ref`, `dockerfile`, `go_package`, `transport`, `volumes`, `extra_args`, `build_system_deps` — each with type, description, and YAML example
 - [x] **CAT-EXP-07**: All catalog entries that require API keys or tokens use `${SECRET_NAME}` syntax; at least one complex entry includes an inline comment or YAML example showing how to configure Argus secrets management for that secret
 
@@ -73,8 +73,8 @@
 | CAT-EXP-01 | Phase 5 | Complete |
 | CAT-EXP-02 | Phase 5 | Complete |
 | CAT-EXP-03 | Phase 5 | Complete |
-| CAT-EXP-04 | Phase 5 | Pending |
-| CAT-EXP-05 | Phase 5 | Pending |
+| CAT-EXP-04 | Phase 5 | Complete |
+| CAT-EXP-05 | Phase 5 | Complete |
 | CAT-EXP-06 | Phase 5 | Complete |
 | CAT-EXP-07 | Phase 5 | Complete |
 

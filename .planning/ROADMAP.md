@@ -110,7 +110,7 @@ Plans:
 - [x] 05-03-PLAN.md — Filesystem + security + memory + isolated: desktop-commander (volumes), obsidian, wcgw, custom-dockerfile-demo (.dockerfile escape hatch), shodan, qdrant-memory, dice — 9 YAML + 1 Dockerfile
 - [x] 05-04-PLAN.md — Remote servers: exa-remote (HTTP), linear-remote (HTTP), exa-sse (SSE) — 3 remote entries
 - [x] 05-05-PLAN.md — Docs: expand container-isolation/index.mdx with all 11 undocumented ContainerConfig fields (source_url, build_steps, entrypoint, build_env, source_ref, dockerfile, go_package, transport, volumes, extra_args, build_system_deps)
-- [ ] 05-06-PLAN.md — Finalize: update catalog.json with all 25 new entries + lint validation; update CONTRIBUTING.md with advanced patterns (depends on 05-01 through 05-05)
+- [x] 05-06-PLAN.md — Finalize: update catalog.json with all 25 new entries + lint validation; update CONTRIBUTING.md with advanced patterns (depends on 05-01 through 05-05)
 
 ## Progress
 

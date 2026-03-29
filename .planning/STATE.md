@@ -4,12 +4,12 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 1
 status: Executing Phase 05
-last_updated: "2026-03-29T19:56:09.421Z"
+last_updated: "2026-03-29T20:04:06.604Z"
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 19
-  completed_plans: 18
+  completed_plans: 19
 ---
 
 # Project State
@@ -75,6 +75,8 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 - [Phase 05-catalog-expansion]: terraform.yaml uses Docker direct pass-through (command: docker, no container: key) — server is already Docker-based, Argus wrapping not applicable
 - [Phase 05-catalog-expansion]: mcp-webresearch-container.yaml uses source_url + build_steps because no npm package exists for mcp-webresearch — GitHub-only server
 - [Phase 05-catalog-expansion]: mcp-k8s-container.yaml uses Go transport (transport: go, go_package) — binary compiled from Go module path via go install into /app/mcp-server
+- [Phase 05-catalog-expansion]: 05-06: custom-dockerfile-demo.yaml excluded from catalog.json — file not created by Wave 1 plans; 65 total entries not 62 as projected
+- [Phase 05-catalog-expansion]: 05-06: CONTRIBUTING.md additions are append-only with three advanced examples (source_url, Go transport, custom Dockerfile) and 13 new container.* field reference rows
 
 ## Performance Metrics
 
@@ -98,6 +100,7 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 | Phase 05-catalog-expansion P01 | 5min | 2 tasks | 11 files |
 | Phase 05-catalog-expansion P03 | 2min | 2 tasks | 8 files |
 | Phase 05-catalog-expansion P02 | 2min | 2 tasks | 6 files |
+| Phase 05-catalog-expansion P06 | 10min | 2 tasks | 2 files |
 
 ## Key Context
 
