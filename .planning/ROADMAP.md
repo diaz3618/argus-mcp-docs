@@ -87,14 +87,40 @@ Plans:
 - [x] 04-05-PLAN.md — Expand Optimizer, Registry, and TUI overviews to full reference depth (meta-tool schemas, registries config, TUI screens/keybindings)
 - [x] 04-06-PLAN.md — Wire 7 new config sub-pages into settings/documents.ts navigation (depends on 04-03)
 
+### Phase 5: Catalog Expansion
+**Goal**: Significantly expand argus-mcp-catalog with 20+ real, tested MCP server configs covering complex stdio containers (volume mounts, network configs, GitHub-only sources, custom Dockerfiles), and update argus-mcp-docs to document all advanced ContainerConfig fields currently missing from the container-isolation page
+**Repo**: Primary: `argus-mcp-catalog` (`/home/diaz/mygit/argus-mcp-catalog/`); Secondary: `argus-mcp-docs` (current repo for docs updates)
+**Depends on**: Phase 3, Phase 4
+**Requirements**: CAT-EXP-01, CAT-EXP-02, CAT-EXP-03, CAT-EXP-04, CAT-EXP-05, CAT-EXP-06, CAT-EXP-07
+**Success Criteria**:
+  1. 20+ new YAML configs added across all catalog categories, prioritizing complex stdio container variants
+  2. At least 5 entries demonstrating advanced patterns: volume mounts, custom networks, `source_url` builds, Go transport, `system_deps`
+  3. GitHub-only MCP server entries added using `source_url` + `build_steps` + `entrypoint` or `container.dockerfile` pattern
+  4. `dockerfiles/` directory created in argus-mcp-catalog with Dockerfile examples; corresponding YAML entries use `container.dockerfile`
+  5. All new configs tested locally with argus-mcp before merging — confirmed to deploy and work correctly
+  6. `catalog.json` updated with all new entries, validated with `node scripts/lint-catalog.js`
+  7. argus-mcp-docs `container-isolation` page documents all advanced ContainerConfig fields: `source_url`, `build_steps`, `entrypoint`, `build_env`, `source_ref`, `dockerfile`, `go_package`, `transport`, `volumes`, `extra_args`, `build_system_deps`
+  8. All secrets use `${SECRET_NAME}` syntax with Argus secrets management examples
+
+**Plans**: 6 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — Database + web-research containers: sqlite (volumes), mysql, redis, mongodb, neon (bridge+secrets), playwright (system_deps), exa — 11 entries
+- [ ] 05-02-PLAN.md — Devops + web-research advanced: mcp-k8s (Go transport), terraform (Docker Hub direct), docker-mcp (socket volume), linear, notion, mcp-webresearch (source_url) — 6 entries
+- [ ] 05-03-PLAN.md — Filesystem + security + memory + isolated: desktop-commander (volumes), obsidian, wcgw, custom-dockerfile-demo (.dockerfile escape hatch), shodan, qdrant-memory, dice — 9 YAML + 1 Dockerfile
+- [ ] 05-04-PLAN.md — Remote servers: exa-remote (HTTP), linear-remote (HTTP), exa-sse (SSE) — 3 remote entries
+- [ ] 05-05-PLAN.md — Docs: expand container-isolation/index.mdx with all 11 undocumented ContainerConfig fields (source_url, build_steps, entrypoint, build_env, source_ref, dockerfile, go_package, transport, volumes, extra_args, build_system_deps)
+- [ ] 05-06-PLAN.md — Finalize: update catalog.json with all 25 new entries + lint validation; update CONTRIBUTING.md with advanced patterns (depends on 05-01 through 05-05)
+
 ## Progress
 
 **Execution Order:**
-Phases execute sequentially: 1 → 2 → 3 → 4
+Phases execute sequentially: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Catalog Automation | 3/3 | Complete   | 2026-03-29 |
 | 2. End-to-End Build Verification | 0/2 | Not started | — |
 | 3. Frontend UX Improvements | 1/1 | Complete   | 2026-03-29 |
-| 4. Documentation Accuracy | 5/6 | In Progress|  |
+| 4. Documentation Accuracy | 6/6 | Complete   | 2026-03-29 |
+| 5. Catalog Expansion | 0/6 | Not started | — |
