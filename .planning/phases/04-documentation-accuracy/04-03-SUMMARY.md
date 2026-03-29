@@ -113,3 +113,15 @@ None - no external service configuration required.
 ---
 *Phase: 04-documentation-accuracy*
 *Completed: 2026-03-29*
+
+## Self-Check: PASSED
+
+- FOUND: contents/docs/configuration/session-pool/index.mdx
+- FOUND: contents/docs/configuration/http-pool/index.mdx
+- FOUND: contents/docs/configuration/retry/index.mdx
+- FOUND: contents/docs/configuration/sse-resilience/index.mdx
+- FOUND: contents/docs/configuration/plugins-config/index.mdx
+- FOUND: contents/docs/configuration/skills-config/index.mdx
+- FOUND: contents/docs/configuration/workflows-config/index.mdx
+- FOUND commit a20cb70 (Task 1)
+- FOUND commit bdf0145 (Task 2)
