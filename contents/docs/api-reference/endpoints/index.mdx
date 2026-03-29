@@ -469,3 +469,239 @@ The server will:
 2. Complete in-flight requests
 3. Disconnect all backends
 4. Exit the process
+
+---
+
+## `GET /registry/search`
+
+Search external MCP server registries (Glama, Smithery, etc.) for available servers.
+
+### Query Parameters
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `q` | string | required | Search query -- alphanumeric and spaces only |
+| `limit` | int | 20 | Maximum results to return (max 100) |
+| `registry` | string | -- | Filter to a specific registry by name (optional) |
+
+### Response
+
+```json
+{
+  "servers": [
+    {
+      "name": "brave-search",
+      "description": "Web search via Brave Search API",
+      "transport": "stdio",
+      "url": "",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+      "version": "1.0.0",
+      "categories": ["search", "web"]
+    }
+  ],
+  "registry": "glama",
+  "total": 1
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `servers` | array | List of matching registry entries |
+| `registry` | string | Name of the registry that returned results |
+| `total` | int | Total number of results returned |
+
+**RegistryServerEntry fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Server identifier |
+| `description` | string | Server description |
+| `transport` | string | Transport type (`stdio`, `sse`, etc.) |
+| `url` | string | Server URL (for HTTP transports) |
+| `command` | string | Launch command (for stdio) |
+| `args` | array | Command arguments |
+| `version` | string | Server version |
+| `categories` | array | Category tags |
+
+Returns 400 if `q` is missing or invalid. Returns 404 if no registries are configured or the specified registry is not found.
+
+---
+
+## `GET /skills`
+
+List all installed skills and their enabled/disabled status.
+
+### Response
+
+```json
+{
+  "skills": [
+    {
+      "name": "my-skill",
+      "version": "1.0.0",
+      "description": "A skill that provides extra tools",
+      "status": "enabled",
+      "tools": 3,
+      "workflows": 1,
+      "author": "Alice"
+    }
+  ]
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Skill identifier |
+| `version` | string | Skill version |
+| `description` | string | Skill description |
+| `status` | string | `"enabled"` or `"disabled"` |
+| `tools` | int | Number of tools provided by the skill |
+| `workflows` | int | Number of workflows provided by the skill |
+| `author` | string | Skill author |
+
+Returns 503 if the skill manager is not initialized.
+
+---
+
+## `POST /skills/{name}/enable`
+
+Enable an installed skill by name.
+
+### Path Parameters
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `name` | string | Skill name |
+
+### Response
+
+```json
+{
+  "name": "my-skill",
+  "action": "enabled",
+  "ok": true
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Skill name |
+| `action` | string | Action performed (`"enabled"`) |
+| `ok` | boolean | Whether the action succeeded |
+
+Returns 404 if the skill is not found. Returns 503 if the skill manager is not initialized.
+
+---
+
+## `POST /skills/{name}/disable`
+
+Disable an installed skill by name.
+
+### Path Parameters
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `name` | string | Skill name |
+
+### Response
+
+```json
+{
+  "name": "my-skill",
+  "action": "disabled",
+  "ok": true
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Skill name |
+| `action` | string | Action performed (`"disabled"`) |
+| `ok` | boolean | Whether the action succeeded |
+
+Returns 404 if the skill is not found. Returns 503 if the skill manager is not initialized.
+
+---
+
+## `POST /tools/call`
+
+Proxy an MCP tools/call request to the correct backend. Routes the call using the internal capability registry and returns the backend's response.
+
+### Request Body
+
+```json
+{
+  "tool": "search_web",
+  "arguments": { "query": "MCP servers" }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `tool` | string | **Required.** Tool name as exposed by the gateway |
+| `arguments` | object | **Required.** Tool arguments -- use `{}` for no args |
+
+### Response
+
+```json
+{
+  "tool": "search_web",
+  "backend": "browser-server",
+  "content": [
+    { "type": "text", "text": "Search results..." }
+  ],
+  "isError": false
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `tool` | string | Tool name that was called |
+| `backend` | string | Backend that handled the call |
+| `content` | array | Result content items (`type`, `text`) |
+| `isError` | boolean | Whether the tool returned an error result |
+
+Returns 404 if the tool is not found. Returns 503 if the backend session is unavailable. Returns 502 if the call fails.
+
+---
+
+## `POST /resources/read`
+
+Proxy an MCP resources/read request to the correct backend. Routes by URI using the internal capability registry.
+
+### Request Body
+
+```json
+{
+  "uri": "docs://readme"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `uri` | string | **Required.** Resource URI as exposed by the gateway |
+
+### Response
+
+```json
+{
+  "uri": "docs://readme",
+  "backend": "docs-server",
+  "contents": [
+    {
+      "uri": "docs://readme",
+      "text": "# Readme\n...",
+      "mimeType": "text/markdown"
+    }
+  ]
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `uri` | string | Resource URI that was read |
+| `backend` | string | Backend that handled the read |
+| `contents` | array | Resource content items (`uri`, `text`, `mimeType`) |
+
+Returns 404 if the resource is not found. Returns 503 if the backend is unavailable. Returns 502 if the read fails.
