@@ -118,6 +118,12 @@ None - no external service configuration required for catalog YAML files themsel
 - 8 new YAML entries ready for catalog.json update (handled by plan 05-06, Wave 2)
 - catalog.json is NOT updated in this plan per plan spec — Wave 2 handles index regeneration
 
+## Self-Check: PASSED
+
+All 8 catalog YAML files confirmed present on disk.
+Task commits 9da5c04 and cae133d verified in argus-mcp-catalog git log.
+SUMMARY.md created and committed to argus-mcp-docs at 4e680c1.
+
 ---
 *Phase: 05-catalog-expansion*
 *Completed: 2026-03-29*
