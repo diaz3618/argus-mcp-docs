@@ -4,7 +4,7 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 1
 status: Executing Phase 05
-last_updated: "2026-03-29T19:55:57.098Z"
+last_updated: "2026-03-29T19:56:09.421Z"
 progress:
   total_phases: 5
   completed_phases: 4
@@ -72,6 +72,9 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 - [Phase 05-catalog-expansion]: desktop-commander-container uses /tmp:/tmp:rw volume + network: none for minimal filesystem tool isolation
 - [Phase 05-catalog-expansion]: shodan paired pattern (subprocess + container) consistent with existing filesystem/git pairs in catalog
 - [Phase 05-catalog-expansion]: dice-container uses network: none — pure computation tool categorized in fully-isolated per D-06
+- [Phase 05-catalog-expansion]: terraform.yaml uses Docker direct pass-through (command: docker, no container: key) — server is already Docker-based, Argus wrapping not applicable
+- [Phase 05-catalog-expansion]: mcp-webresearch-container.yaml uses source_url + build_steps because no npm package exists for mcp-webresearch — GitHub-only server
+- [Phase 05-catalog-expansion]: mcp-k8s-container.yaml uses Go transport (transport: go, go_package) — binary compiled from Go module path via go install into /app/mcp-server
 
 ## Performance Metrics
 
@@ -94,6 +97,7 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 | Phase 05-catalog-expansion P05 | 2min | 1 tasks | 1 files |
 | Phase 05-catalog-expansion P01 | 5min | 2 tasks | 11 files |
 | Phase 05-catalog-expansion P03 | 2min | 2 tasks | 8 files |
+| Phase 05-catalog-expansion P02 | 2min | 2 tasks | 6 files |
 
 ## Key Context
 

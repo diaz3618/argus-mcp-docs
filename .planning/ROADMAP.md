@@ -106,7 +106,7 @@ Plans:
 
 Plans:
 - [x] 05-01-PLAN.md — Database + web-research containers: sqlite (volumes), mysql, redis, mongodb, neon (bridge+secrets), playwright (system_deps), exa — 11 entries
-- [ ] 05-02-PLAN.md — Devops + web-research advanced: mcp-k8s (Go transport), terraform (Docker Hub direct), docker-mcp (socket volume), linear, notion, mcp-webresearch (source_url) — 6 entries
+- [x] 05-02-PLAN.md — Devops + web-research advanced: mcp-k8s (Go transport), terraform (Docker Hub direct), docker-mcp (socket volume), linear, notion, mcp-webresearch (source_url) — 6 entries
 - [x] 05-03-PLAN.md — Filesystem + security + memory + isolated: desktop-commander (volumes), obsidian, wcgw, custom-dockerfile-demo (.dockerfile escape hatch), shodan, qdrant-memory, dice — 9 YAML + 1 Dockerfile
 - [x] 05-04-PLAN.md — Remote servers: exa-remote (HTTP), linear-remote (HTTP), exa-sse (SSE) — 3 remote entries
 - [x] 05-05-PLAN.md — Docs: expand container-isolation/index.mdx with all 11 undocumented ContainerConfig fields (source_url, build_steps, entrypoint, build_env, source_ref, dockerfile, go_package, transport, volumes, extra_args, build_system_deps)
@@ -123,4 +123,4 @@ Phases execute sequentially: 1 → 2 → 3 → 4 → 5
 | 2. End-to-End Build Verification | 2/2 | Complete    | 2026-03-29 |
 | 3. Frontend UX Improvements | 1/1 | Complete   | 2026-03-29 |
 | 4. Documentation Accuracy | 6/6 | Complete   | 2026-03-29 |
-| 5. Catalog Expansion | 4/6 | In Progress|  |
+| 5. Catalog Expansion | 5/6 | In Progress|  |
