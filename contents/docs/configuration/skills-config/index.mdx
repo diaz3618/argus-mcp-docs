@@ -1,0 +1,27 @@
+---
+title: "Skills Configuration"
+description: "Configure skills discovery — the directory where skill packages are installed and whether discovery is enabled."
+---
+
+The `skills` section controls where Argus looks for installed skill packages and whether skill discovery is active. Skills extend Argus with additional tool implementations that are discovered at startup from the configured directory.
+
+See [Skills](/docs/skills/overview) for the full skills guide including how to install and author skills.
+
+```yaml
+skills:
+  directory: skills
+  enabled: true
+```
+
+A customized example using an absolute path:
+
+```yaml
+skills:
+  directory: /opt/argus/skills
+  enabled: true
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `directory` | string | `"skills"` | Directory where skills are installed. Relative paths are resolved from the config file location. |
+| `enabled` | bool | `true` | Enable skill discovery and management. When `false`, the skills directory is not scanned and no skills are loaded at startup. |

@@ -1,0 +1,84 @@
+---
+title: "Plugins Configuration"
+description: "Configure the plugin framework — enable/disable plugins globally and configure individual plugin entries."
+---
+
+The `plugins` section controls the plugin framework. Plugins are ordered hooks that run before and after MCP requests, allowing behavior like secrets detection, PII filtering, rate limiting, and audit logging.
+
+This page covers the configuration structure only. See [Built-in Plugins](/docs/plugins/built-in-plugins) for available plugin names and their settings. See [Plugins Overview](/docs/plugins/overview) for plugin authoring.
+
+## Top-level Fields
+
+```yaml
+plugins:
+  enabled: true
+  entries:
+    - name: secrets_detection
+      enabled: true
+      execution_mode: enforce
+      priority: 10
+    - name: pii_filter
+      priority: 20
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `enabled` | bool | `true` | Global plugin system toggle. When `false`, no plugin hooks run regardless of individual entry configuration. |
+| `entries` | list | `[]` | Ordered list of plugin configurations. Plugins execute in ascending `priority` order. |
+
+## Plugin Entry Fields
+
+Each item in `entries` is a `PluginConfig` object:
+
+```yaml
+plugins:
+  enabled: true
+  entries:
+    - name: my_plugin
+      enabled: true
+      execution_mode: enforce_ignore_error
+      priority: 100
+      timeout: 30
+      conditions:
+        servers: [backend-a, backend-b]
+        tools: [search_*, read_*]
+        mcp_methods: [call_tool]
+      settings:
+        block_patterns: ["sk-[A-Za-z0-9]+"]
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `name` | string | **Required** | Unique plugin identifier. Must match the installed plugin's registered name. |
+| `enabled` | bool | `true` | Whether this plugin entry is active. |
+| `execution_mode` | string | `enforce_ignore_error` | How plugin errors affect request processing. See execution modes table below. |
+| `priority` | int | `100` | Execution priority. Lower values run first. Range: 0–10000. |
+| `timeout` | float | `30.0` | Per-hook timeout in seconds. If the hook exceeds this, it is cancelled. Range: 0.1–300. |
+| `conditions` | object | (unrestricted) | Conditions controlling when plugin hooks fire. See conditions section below. |
+| `settings` | map | `{}` | Plugin-specific key-value settings passed to the plugin at runtime. |
+
+### Execution Modes
+
+| Mode | Behavior |
+|------|----------|
+| `enforce` | Plugin error fails the request and returns an error to the client. |
+| `enforce_ignore_error` | Plugin error is logged but the request continues. **Default.** |
+| `permissive` | Like `enforce_ignore_error` with relaxed validation — errors are suppressed more broadly. |
+| `disabled` | The hook is skipped entirely, as if the entry does not exist. |
+
+## Conditions
+
+The `conditions` object controls which requests a plugin's hooks fire on. All conditions are AND-combined. An empty list means "all" (unrestricted).
+
+```yaml
+conditions:
+  servers: []          # empty = all backends
+  tools: []            # empty = all tools/capabilities
+  mcp_methods: []      # empty = all MCP methods
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `servers` | list of strings | `[]` | Backend server names this plugin applies to. Empty list matches all backends. |
+| `tools` | list of strings | `[]` | Tool or capability names this plugin applies to. Empty list matches all tools. |
+| `mcp_methods` | list of strings | `[]` | MCP methods to filter on. Valid values: `call_tool`, `read_resource`, `get_prompt`. Empty list matches all methods. |
