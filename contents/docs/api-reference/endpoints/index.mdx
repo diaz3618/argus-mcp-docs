@@ -43,6 +43,37 @@ Liveness and readiness probe. **Always public** -- no token required.
 
 ---
 
+## `GET /ready`
+
+Readiness probe. Returns 200 when the gateway is accepting traffic. Returns 503 when backends are not yet connected. **Always public** -- no token required.
+
+### Response
+
+**200 OK** (gateway ready):
+
+```json
+{
+  "ready": true,
+  "reason": "accepting traffic"
+}
+```
+
+**503 Service Unavailable** (not ready):
+
+```json
+{
+  "ready": false,
+  "reason": "backends not connected"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `ready` | boolean | Whether the gateway is ready to serve traffic |
+| `reason` | string | Human-readable readiness status message |
+
+---
+
 ## `GET /status`
 
 Full service status including config and transport info.
@@ -302,6 +333,40 @@ data: {"id": "evt_def", "timestamp": "...", "stage": "error", ...}
 
 ---
 
+## `GET /batch`
+
+Combined status, backends, capabilities, and recent events in a single round-trip. Designed for polling clients (TUI) to eliminate per-poll multi-request overhead.
+
+### Query Parameters
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `events_limit` | int | 20 | Maximum events to include in the response |
+
+### Response
+
+```json
+{
+  "status": { ... },
+  "backends": { ... },
+  "capabilities": { ... },
+  "events": { ... }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `status` | object | Service status (same schema as `GET /status`) |
+| `backends` | object | Backend list (same schema as `GET /backends`) |
+| `capabilities` | object | Aggregated capabilities (same schema as `GET /capabilities`) |
+| `events` | object | Recent events (same schema as `GET /events`) |
+
+<Note>
+The `status`, `backends`, `capabilities`, and `events` objects have the same schemas as the respective individual endpoints.
+</Note>
+
+---
+
 ## `POST /reload`
 
 Hot-reload the configuration file. Detects changes and reconnects affected backends.
@@ -345,6 +410,36 @@ Reconnect a specific backend by name.
 ```
 
 Returns 404 if the backend name is not found.
+
+---
+
+## `POST /reauth/{name}`
+
+Trigger interactive re-authentication for a backend using PKCE or OAuth2. Initiates the browser-based auth flow for the named backend.
+
+### Path Parameters
+
+| Param | Type | Description |
+|-------|------|-------------|
+| `name` | string | Backend name from config |
+
+### Response
+
+```json
+{
+  "name": "my-server",
+  "reauth_initiated": true,
+  "error": null
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Backend name |
+| `reauth_initiated` | boolean | Whether the re-auth flow was started |
+| `error` | string? | Error message if initiation failed |
+
+Returns 404 if the backend name is not found. Returns 503 if the service is not running.
 
 ---
 
