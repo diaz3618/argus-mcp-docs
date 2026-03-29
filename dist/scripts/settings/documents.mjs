@@ -50,6 +50,34 @@ export const Documents = [
                 title: 'Secrets Management',
                 href: '/secrets-management',
             },
+            {
+                title: 'Session Pool',
+                href: '/session-pool',
+            },
+            {
+                title: 'HTTP Pool',
+                href: '/http-pool',
+            },
+            {
+                title: 'Retry',
+                href: '/retry',
+            },
+            {
+                title: 'SSE Resilience',
+                href: '/sse-resilience',
+            },
+            {
+                title: 'Plugins Configuration',
+                href: '/plugins-config',
+            },
+            {
+                title: 'Skills Configuration',
+                href: '/skills-config',
+            },
+            {
+                title: 'Workflows Configuration',
+                href: '/workflows-config',
+            },
         ],
     },
     {
