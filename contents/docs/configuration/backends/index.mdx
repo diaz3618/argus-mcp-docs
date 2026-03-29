@@ -126,9 +126,12 @@ backends:
 
 ```yaml
 timeouts:
-  init: 30        # MCP session initialization (seconds)
-  cap_fetch: 10   # Capability list fetch (seconds)
-  sse_startup: 5  # Wait for local SSE process to start (seconds)
+  init: 30          # MCP session initialization (seconds)
+  cap_fetch: 10     # Capability list fetch (seconds)
+  sse_startup: 5    # Wait for local SSE process to start (seconds)
+  startup: 60       # Overall connection timeout including subprocess spawn (seconds)
+  retries: 3        # Automatic retries for failed connections
+  retry_delay: 5    # Seconds between retry attempts
 ```
 
 | Field | Type | Default | Description |
@@ -136,6 +139,9 @@ timeouts:
 | `init` | float | `null` (global default: 15s) | MCP session init timeout |
 | `cap_fetch` | float | `null` (global default: 10s) | Capability fetch timeout |
 | `sse_startup` | float | `null` (global default: 5s) | Local SSE process startup wait |
+| `startup` | float | `null` (no default) | Overall per-backend connection timeout including subprocess spawn; useful for cold-start scenarios where uvx/npx downloads packages |
+| `retries` | int | `null` (no default) | Number of automatic retries for failed backend connections (0–10) |
+| `retry_delay` | float | `null` (no default) | Seconds to wait between retry attempts (0–120) |
 
 ### Filters
 
