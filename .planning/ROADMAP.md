@@ -9,7 +9,7 @@ Both phases touch different repos: Phase 1 is entirely in `argus-mcp-catalog`, P
 ## Phases
 
 - [x] **Phase 1: Catalog Automation** — `generate-index.yml`, `notify-docs.yml`, `DOCS_DISPATCH_TOKEN`, and PR template wired into `argus-mcp-catalog` (completed 2026-03-29)
-- [ ] **Phase 2: End-to-End Build Verification** — Local build with real token confirms all 10 YAML Cookbook pages render with catalog data; any issues found and fixed
+- [x] **Phase 2: End-to-End Build Verification** — Local build with real token confirms all 10 YAML Cookbook pages render with catalog data; any issues found and fixed (completed 2026-03-29)
 
 ## Phase Details
 
@@ -48,7 +48,7 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md — Run pre-build steps and `pnpm build` with token; capture output; verify `out/` structure
-- [ ] 02-02-PLAN.md — Spot-check rendered category pages for YAML content; document verified state; fix any issues found
+- [x] 02-02-PLAN.md — Spot-check rendered category pages for YAML content; document verified state; fix any issues found
 
 ### Phase 3: Frontend UX Improvements
 **Goal**: Improve the developer experience of the docs site — complete syntax highlighting coverage for all languages used in the project (YAML, Python, and others) and implement default-collapsed sidebar navigation with "Getting Started" always open
@@ -120,7 +120,7 @@ Phases execute sequentially: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Catalog Automation | 3/3 | Complete   | 2026-03-29 |
-| 2. End-to-End Build Verification | 0/2 | Not started | — |
+| 2. End-to-End Build Verification | 2/2 | Complete   | 2026-03-29 |
 | 3. Frontend UX Improvements | 1/1 | Complete   | 2026-03-29 |
 | 4. Documentation Accuracy | 6/6 | Complete   | 2026-03-29 |
 | 5. Catalog Expansion | 0/6 | Not started | — |

@@ -4,12 +4,12 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 1
 status: Executing Phase 02
-last_updated: "2026-03-29T19:30:00.000Z"
+last_updated: "2026-03-29T19:15:35.130Z"
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 19
-  completed_plans: 12
+  completed_plans: 13
 ---
 
 # Project State
@@ -62,6 +62,7 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 - [Phase 02-end-to-end-build-verification]: Callout component does not exist in rubix-documents MDX registry — Note with type=warning is the correct replacement
 - [Phase 02-end-to-end-build-verification]: CATALOG_READ_TOKEN=$(gh auth token) pnpm run build is the correct local build invocation — token injected inline, no .env.local, no exported var
 - [Phase 02-end-to-end-build-verification]: rm -rf dist/scripts before running post-process.sh guarantees no stale incremental TypeScript output
+- [Phase 02-end-to-end-build-verification]: find out/docs/yaml-cookbook -name index.html | wc -l outputs 11 (not 10) — landing page counts but BUILD-03 intent (10 category pages with real YAML) is fully satisfied
 
 ## Performance Metrics
 
@@ -79,6 +80,7 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 | Phase 04-documentation-accuracy P05 | 7min | 2 tasks | 3 files |
 | Phase 04-documentation-accuracy P06 | 3min | 1 tasks | 1 files |
 | Phase 02-end-to-end-build-verification P01 | 10min | 2 tasks | 4 files |
+| Phase 02-end-to-end-build-verification P02 | 5min | 2 tasks | 2 files |
 
 ## Key Context
 
