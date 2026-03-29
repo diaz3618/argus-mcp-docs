@@ -17,7 +17,7 @@
 
 - [x] **BUILD-01**: `sh .husky/post-process.sh` runs without error (search index generated, TypeScript compiles)
 - [x] **BUILD-02**: `CATALOG_READ_TOKEN=<token> pnpm run build` completes successfully with real catalog data — `out/docs/yaml-cookbook/` contains 10 category `index.html` files with actual YAML content
-- [ ] **BUILD-03**: Build output verified: `find out/docs/yaml-cookbook -name "index.html" | wc -l` equals 10, and at least one category page contains `language-yaml` (real YAML blocks rendered, not empty-state fallback)
+- [x] **BUILD-03**: Build output verified: `find out/docs/yaml-cookbook -name "index.html" | wc -l` equals 10, and at least one category page contains `language-yaml` (real YAML blocks rendered, not empty-state fallback)
 
 ### Contributor Workflow (argus-mcp-catalog repo)
 
@@ -66,7 +66,7 @@
 | CATALOG-05 | Phase 1 | Pending (user action required) |
 | BUILD-01 | Phase 2 | Complete |
 | BUILD-02 | Phase 2 | Complete |
-| BUILD-03 | Phase 2 | Pending |
+| BUILD-03 | Phase 2 | Complete |
 | CONTRIB-01 | Phase 1 | Complete |
 | FE-01 | Phase 3 | Complete |
 | FE-02 | Phase 3 | Complete |
