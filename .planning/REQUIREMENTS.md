@@ -7,7 +7,7 @@
 
 ### Catalog Automation (argus-mcp-catalog repo)
 
-- [ ] **CATALOG-01**: `scripts/generate-index.js` scans `configs/` subdirectories and produces a correct `catalog.json` with `{ categories: Record<string, string[]>, updated_at: string }`
+- [x] **CATALOG-01**: `scripts/generate-index.js` scans `configs/` subdirectories and produces a correct `catalog.json` with `{ categories: Record<string, string[]>, updated_at: string }`
 - [ ] **CATALOG-02**: `generate-index.yml` runs on push to main when `configs/**` changes, executes the script, and commits `catalog.json` back using `GITHUB_TOKEN` + `stefanzweifel/git-auto-commit-action@v7` with `[skip ci]` in the commit message
 - [ ] **CATALOG-03**: `generate-index.yml` has `concurrency: group: catalog-index-generation` (cancel-in-progress: false) to prevent race conditions from simultaneous merges
 - [ ] **CATALOG-04**: `notify-docs.yml` triggers via `workflow_run` after `generate-index.yml` completes successfully and dispatches `workflow_dispatch` to `diaz3618/argus-mcp-docs` using `gh workflow run` with `DOCS_DISPATCH_TOKEN`
@@ -44,7 +44,7 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CATALOG-01 | Phase 1 | Pending |
+| CATALOG-01 | Phase 1 | Complete |
 | CATALOG-02 | Phase 1 | Pending |
 | CATALOG-03 | Phase 1 | Pending |
 | CATALOG-04 | Phase 1 | Pending |
