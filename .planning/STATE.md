@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_plan: 1
-status: Executing Phase 02
-last_updated: "2026-03-29T19:15:35.130Z"
+status: Executing Phase 05
+last_updated: "2026-03-29T19:55:57.098Z"
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 19
-  completed_plans: 13
+  completed_plans: 18
 ---
 
 # Project State
@@ -19,7 +19,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-28)
 
 **Core value:** The docs site always reflects the current state of the catalog — when a YAML config is merged to argus-mcp-catalog, the docs site rebuilds automatically.
-**Current focus:** Phase 02 — End-to-End Build Verification
+**Current focus:** Phase 05 — catalog-expansion
 
 ## Current Status
 
@@ -63,6 +63,15 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 - [Phase 02-end-to-end-build-verification]: CATALOG_READ_TOKEN=$(gh auth token) pnpm run build is the correct local build invocation — token injected inline, no .env.local, no exported var
 - [Phase 02-end-to-end-build-verification]: rm -rf dist/scripts before running post-process.sh guarantees no stale incremental TypeScript output
 - [Phase 02-end-to-end-build-verification]: find out/docs/yaml-cookbook -name index.html | wc -l outputs 11 (not 10) — landing page counts but BUILD-03 intent (10 category pages with real YAML) is fully satisfied
+- [Phase 05-catalog-expansion]: 05-04: exa-remote and linear-remote use type: streamable-http matching existing catalog pattern; exa-sse uses type: sse for explicit SSE-with-auth pattern
+- [Phase 05-catalog-expansion]: 05-04: All remote entries use ${SECRET_NAME} inline env var syntax — no hardcoded credentials; YAML comments document secret name and key acquisition URL
+- [Phase 05-catalog-expansion]: 05-05: All new container-isolation sections appended after existing content — no deletions (D-25 append-only rule). build_steps + entrypoint required when source_url set (validation behavior). build_system_deps vs system_deps comparison table documents builder-only vs runtime stage distinction.
+- [Phase 05-catalog-expansion]: sqlite-container uses uvx + network: none + volumes mount for fully isolated local DB access
+- [Phase 05-catalog-expansion]: playwright-container uses system_deps list for chromium, chromedriver, dbus, xvfb — OS packages required for headless browser
+- [Phase 05-catalog-expansion]: catalog.json not updated in 05-01 — deferred to plan 05-06 to avoid merge conflicts with parallel Wave 1 plans
+- [Phase 05-catalog-expansion]: desktop-commander-container uses /tmp:/tmp:rw volume + network: none for minimal filesystem tool isolation
+- [Phase 05-catalog-expansion]: shodan paired pattern (subprocess + container) consistent with existing filesystem/git pairs in catalog
+- [Phase 05-catalog-expansion]: dice-container uses network: none — pure computation tool categorized in fully-isolated per D-06
 
 ## Performance Metrics
 
@@ -81,6 +90,10 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 | Phase 04-documentation-accuracy P06 | 3min | 1 tasks | 1 files |
 | Phase 02-end-to-end-build-verification P01 | 10min | 2 tasks | 4 files |
 | Phase 02-end-to-end-build-verification P02 | 5min | 2 tasks | 2 files |
+| Phase 05-catalog-expansion P04 | 3min | 1 tasks | 3 files |
+| Phase 05-catalog-expansion P05 | 2min | 1 tasks | 1 files |
+| Phase 05-catalog-expansion P01 | 5min | 2 tasks | 11 files |
+| Phase 05-catalog-expansion P03 | 2min | 2 tasks | 8 files |
 
 ## Key Context
 
