@@ -301,3 +301,13 @@ The engine validates every workflow at load time:
 - **Acyclicity** -- the dependency graph must be a DAG (no cycles)
 
 Invalid workflows are logged as warnings and skipped -- they won't appear in `list_tools`.
+
+## Module map
+
+| Module | Purpose |
+|--------|---------|
+| `argus_mcp/workflows/dsl.py` | `WorkflowDefinition` dataclass + YAML parser/validator |
+| `argus_mcp/workflows/steps.py` | `Step` dataclass + `StepResult`, `StepStatus` |
+| `argus_mcp/workflows/executor.py` | `WorkflowExecutor` — DAG execution, parallel fan-out, interpolation |
+| `argus_mcp/workflows/composite_tool.py` | `CompositeTool` — wraps a workflow as an MCP tool |
+| `examples/workflows/` | Example workflow YAML files |
