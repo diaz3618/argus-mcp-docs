@@ -64,7 +64,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 03-01-PLAN.md — Add 6 Prism token CSS rules to globals.css; change sublink.tsx to collapsed-default with Getting Started always open
+- [x] 03-01-PLAN.md — Add 6 Prism token CSS rules to globals.css; change sublink.tsx to collapsed-default with Getting Started always open
 
 ### Phase 4: Documentation Accuracy
 **Goal**: Every page in the argus-mcp-docs site accurately reflects the argus-mcp codebase — wrong information corrected, missing documented features added, and gaps in API/config reference filled
@@ -96,5 +96,5 @@ Phases execute sequentially: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Catalog Automation | 3/3 | Complete   | 2026-03-29 |
 | 2. End-to-End Build Verification | 0/2 | Not started | — |
-| 3. Frontend UX Improvements | 0/1 | Not started | — |
+| 3. Frontend UX Improvements | 1/1 | Complete   | 2026-03-29 |
 | 4. Documentation Accuracy | 0/6 | Not started | — |
