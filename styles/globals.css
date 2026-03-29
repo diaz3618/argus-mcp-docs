@@ -262,6 +262,48 @@ pre > code {
   color: hsl(0, 0%, 71%);
 }
 
+.class-name {
+  color: hsla(210, 100%, 66%, 1);
+}
+
+.operator {
+  color: gray;
+}
+
+.variable {
+  color: hsla(335, 73%, 53%, 1);
+}
+
+.dark .variable {
+  color: hsla(335, 76%, 59%, 1);
+}
+
+.important {
+  color: hsla(38, 92%, 50%, 1);
+}
+
+.dark .important {
+  color: hsla(38, 95%, 58%, 1);
+}
+
+.atrule {
+  color: hsla(335, 73%, 53%, 1);
+}
+
+.dark .atrule {
+  color: hsla(335, 76%, 59%, 1);
+}
+
+.null-keyword,
+.null.token {
+  color: hsl(0, 0%, 29%);
+}
+
+.dark .null-keyword,
+.dark .null.token {
+  color: hsl(0, 0%, 71%);
+}
+
 span.katex-display {
   display: flex;
 }
