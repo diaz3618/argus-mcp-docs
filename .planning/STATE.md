@@ -4,7 +4,7 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 1
 status: Executing Phase 04
-last_updated: "2026-03-29T15:19:44.268Z"
+last_updated: "2026-03-29T15:19:56.507Z"
 progress:
   total_phases: 4
   completed_phases: 2
@@ -51,6 +51,9 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 - [Phase Phase 03-frontend-ux-improvements]: Gap closure plan 03-02: FE-01 and FE-02 registered in REQUIREMENTS.md — administrative fix, no code changes needed since implementations were already complete
 - [Phase 04-documentation-accuracy]: GET /batch documented with note that sub-object schemas match individual endpoints, not duplicated inline
 - [Phase 04-documentation-accuracy]: All response field names verified against schemas.py Pydantic models — no invented fields used in endpoint docs
+- [Phase 04-documentation-accuracy]: Plugin setting names corrected to match Python source: window_seconds, cooldown_seconds, backoff_factor, ttl_seconds, max_entries
+- [Phase 04-documentation-accuracy]: All 6 TimeoutConfig fields now documented in backends/index.mdx: init, cap_fetch, sse_startup, startup, retries, retry_delay
+- [Phase 04-documentation-accuracy]: 04-03: Field names, types, defaults sourced from Pydantic models — no invented fields. Constraint ranges in Description column.
 
 ## Performance Metrics
 
@@ -63,6 +66,7 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 | Phase 03-frontend-ux-improvements P02 | 2min | 1 tasks | 1 files |
 | Phase 04-documentation-accuracy P02 | 2min | 2 tasks | 1 files |
 | Phase 04-documentation-accuracy P01 | 2min | 2 tasks | 2 files |
+| Phase 04-documentation-accuracy P03 | 6min | 2 tasks | 7 files |
 
 ## Key Context
 
