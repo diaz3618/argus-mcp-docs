@@ -10,6 +10,9 @@ Both phases touch different repos: Phase 1 is entirely in `argus-mcp-catalog`, P
 
 - [x] **Phase 1: Catalog Automation** — `generate-index.yml`, `notify-docs.yml`, `DOCS_DISPATCH_TOKEN`, and PR template wired into `argus-mcp-catalog` (completed 2026-03-29)
 - [x] **Phase 2: End-to-End Build Verification** — Local build with real token confirms all 10 YAML Cookbook pages render with catalog data; any issues found and fixed (completed 2026-03-29)
+- [x] **Phase 3: Frontend UX Improvements** — Prism syntax highlighting for YAML/Python and default-collapsed sidebar with "Getting Started" always open (completed 2026-03-29)
+- [x] **Phase 4: Documentation Accuracy** — All docs updated to match codebase: plugin count, API endpoints, config sub-pages, Skills/Workflows/Optimizer/Registry/TUI reference depth (completed 2026-03-29)
+- [x] **Phase 5: Catalog Expansion** — 28 new YAML catalog entries across 9 categories, catalog.json at 65 entries, all ContainerConfig fields documented (completed 2026-03-29)
 
 ## Phase Details
 
@@ -123,4 +126,4 @@ Phases execute sequentially: 1 → 2 → 3 → 4 → 5
 | 2. End-to-End Build Verification | 2/2 | Complete    | 2026-03-29 |
 | 3. Frontend UX Improvements | 1/1 | Complete   | 2026-03-29 |
 | 4. Documentation Accuracy | 6/6 | Complete   | 2026-03-29 |
-| 5. Catalog Expansion | 5/6 | In Progress|  |
+| 5. Catalog Expansion | 6/6 | Complete   | 2026-03-29 |
