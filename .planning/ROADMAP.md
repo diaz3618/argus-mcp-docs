@@ -47,7 +47,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Run pre-build steps and `pnpm build` with token; capture output; verify `out/` structure
+- [x] 02-01-PLAN.md — Run pre-build steps and `pnpm build` with token; capture output; verify `out/` structure
 - [ ] 02-02-PLAN.md — Spot-check rendered category pages for YAML content; document verified state; fix any issues found
 
 ### Phase 3: Frontend UX Improvements

@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_plan: 1
-status: Executing Phase 04
-last_updated: "2026-03-29T15:27:52.210Z"
+status: Executing Phase 02
+last_updated: "2026-03-29T19:11:27.961Z"
 progress:
-  total_phases: 4
+  total_phases: 5
   completed_phases: 3
-  total_plans: 11
-  completed_plans: 11
+  total_plans: 19
+  completed_plans: 12
 ---
 
 # Project State
@@ -19,13 +19,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-28)
 
 **Core value:** The docs site always reflects the current state of the catalog — when a YAML config is merged to argus-mcp-catalog, the docs site rebuilds automatically.
-**Current focus:** Phase 04 — Documentation Accuracy
+**Current focus:** Phase 02 — End-to-End Build Verification
 
 ## Current Status
 
-**Active phase:** Phase 1: Catalog Automation (complete — all 3 plans done, DOCS_DISPATCH_TOKEN configured, workflows tested)
+**Active phase:** Phase 2: End-to-End Build Verification (plan 01 complete — BUILD-01 and BUILD-02 satisfied)
 **Current Plan:** 1
-**Next action:** Resolve GitHub billing/spending limit, then proceed to Phase 2 (End-to-End Build Verification)
+**Next action:** Continue with remaining Phase 2 plans or advance to Phase 5 (Catalog Expansion)
 
 ## Phase History
 
@@ -59,6 +59,9 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 - [Phase 04-documentation-accuracy]: Optimizer 'high-risk, opt-in, default off' phrasing mirrors feature_flags description in schema.py
 - [Phase 04-documentation-accuracy]: Management API search endpoint documented as distinct from external registry API to avoid confusion
 - [Phase 04-documentation-accuracy]: 04-06: 7 new config nav items appended after Secrets Management in Configuration items array — href values match directory names exactly
+- [Phase 02-end-to-end-build-verification]: Callout component does not exist in rubix-documents MDX registry — Note with type=warning is the correct replacement
+- [Phase 02-end-to-end-build-verification]: CATALOG_READ_TOKEN=$(gh auth token) pnpm run build is the correct local build invocation — token injected inline, no .env.local, no exported var
+- [Phase 02-end-to-end-build-verification]: rm -rf dist/scripts before running post-process.sh guarantees no stale incremental TypeScript output
 
 ## Performance Metrics
 
@@ -75,6 +78,7 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 | Phase 04-documentation-accuracy P04 | 10min | 2 tasks | 2 files |
 | Phase 04-documentation-accuracy P05 | 7min | 2 tasks | 3 files |
 | Phase 04-documentation-accuracy P06 | 3min | 1 tasks | 1 files |
+| Phase 02-end-to-end-build-verification P01 | 10min | 2 tasks | 4 files |
 
 ## Key Context
 
@@ -89,4 +93,4 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 - **Workflow test**: Run 23698777042 confirmed chain logic correct — Notify Docs Rebuild skipped (correctly) when Generate Catalog Index failed
 
 ---
-*Last session: 2026-03-29 — Stopped at: Completed 01-03-PLAN.md — Phase 1 complete, blocked on GitHub billing before Phase 2*
+*Last session: 2026-03-29 — Stopped at: Completed 02-01-PLAN.md — BUILD-01 and BUILD-02 satisfied, Callout bug fixed*
