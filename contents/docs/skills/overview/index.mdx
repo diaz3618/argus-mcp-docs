@@ -223,6 +223,20 @@ manager.enable("my-awesome-skill")
 
 Press `a` in the TUI, or write the backend config manually. The `awesome-server` backend must be connectable (stdio command, SSE URL, etc.).
 
+## Lifecycle management
+
+Skills default to **enabled** when first discovered. The enabled/disabled state is persisted in `skills-state.json` and honoured across restarts.
+
+Three ways to toggle a skill:
+
+| Method | How |
+|--------|-----|
+| TUI | Press `e` on a skill row in the Skills screen |
+| Programmatic | `manager.enable("skill-name")` / `manager.disable("skill-name")` |
+| Management API | `POST /manage/v1/skills/{name}/enable` or `/manage/v1/skills/{name}/disable` |
+
+The management API routes are provided by `argus_mcp/server/management/router.py` and are available when the server is running.
+
 ## State persistence
 
 Enabled/disabled state is saved to `skills-state.json` next to the skills directory:
