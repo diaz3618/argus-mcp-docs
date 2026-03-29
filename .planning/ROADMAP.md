@@ -29,7 +29,7 @@ Both phases touch different repos: Phase 1 is entirely in `argus-mcp-catalog`, P
 
 Plans:
 - [x] 01-01-PLAN.md — Write `scripts/generate-index.js` (pure Node.js, no deps) and verify it produces correct `catalog.json` locally
-- [ ] 01-02-PLAN.md — Write `generate-index.yml` (path filter, GITHUB_TOKEN, concurrency, auto-commit) and `notify-docs.yml` (workflow_run chain, gh dispatch)
+- [x] 01-02-PLAN.md — Write `generate-index.yml` (path filter, GITHUB_TOKEN, concurrency, auto-commit) and `notify-docs.yml` (workflow_run chain, gh dispatch)
 - [ ] 01-03-PLAN.md — Write `.github/pull_request_template.md`; document `DOCS_DISPATCH_TOKEN` setup instructions; push all changes to `argus-mcp-catalog`
 
 ### Phase 2: End-to-End Build Verification
@@ -57,5 +57,5 @@ Phases execute sequentially: 1 → 2
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Catalog Automation | 1/3 | In Progress|  |
+| 1. Catalog Automation | 2/3 | In Progress|  |
 | 2. End-to-End Build Verification | 0/2 | Not started | — |

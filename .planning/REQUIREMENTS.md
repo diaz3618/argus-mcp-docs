@@ -8,10 +8,10 @@
 ### Catalog Automation (argus-mcp-catalog repo)
 
 - [x] **CATALOG-01**: `scripts/generate-index.js` scans `configs/` subdirectories and produces a correct `catalog.json` with `{ categories: Record<string, string[]>, updated_at: string }`
-- [ ] **CATALOG-02**: `generate-index.yml` runs on push to main when `configs/**` changes, executes the script, and commits `catalog.json` back using `GITHUB_TOKEN` + `stefanzweifel/git-auto-commit-action@v7` with `[skip ci]` in the commit message
-- [ ] **CATALOG-03**: `generate-index.yml` has `concurrency: group: catalog-index-generation` (cancel-in-progress: false) to prevent race conditions from simultaneous merges
-- [ ] **CATALOG-04**: `notify-docs.yml` triggers via `workflow_run` after `generate-index.yml` completes successfully and dispatches `workflow_dispatch` to `diaz3618/argus-mcp-docs` using `gh workflow run` with `DOCS_DISPATCH_TOKEN`
-- [ ] **CATALOG-05**: `DOCS_DISPATCH_TOKEN` fine-grained PAT created with `actions: write` on `argus-mcp-docs` and stored as a secret in `argus-mcp-catalog`
+- [x] **CATALOG-02**: `generate-index.yml` runs on push to main when `configs/**` changes, executes the script, and commits `catalog.json` back using `GITHUB_TOKEN` + `stefanzweifel/git-auto-commit-action@v7` with `[skip ci]` in the commit message
+- [x] **CATALOG-03**: `generate-index.yml` has `concurrency: group: catalog-index-generation` (cancel-in-progress: false) to prevent race conditions from simultaneous merges
+- [x] **CATALOG-04**: `notify-docs.yml` triggers via `workflow_run` after `generate-index.yml` completes successfully and dispatches `workflow_dispatch` to `diaz3618/argus-mcp-docs` using `gh workflow run` with `DOCS_DISPATCH_TOKEN`
+- [ ] **CATALOG-05**: `DOCS_DISPATCH_TOKEN` fine-grained PAT created with `actions: write` on `argus-mcp-docs` and stored as a secret in `argus-mcp-catalog` _(workflow wired + instructions documented; secret creation is a manual user step)_
 
 ### Build Verification (argus-mcp-docs repo)
 
@@ -45,10 +45,10 @@
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | CATALOG-01 | Phase 1 | Complete |
-| CATALOG-02 | Phase 1 | Pending |
-| CATALOG-03 | Phase 1 | Pending |
-| CATALOG-04 | Phase 1 | Pending |
-| CATALOG-05 | Phase 1 | Pending |
+| CATALOG-02 | Phase 1 | Complete |
+| CATALOG-03 | Phase 1 | Complete |
+| CATALOG-04 | Phase 1 | Complete |
+| CATALOG-05 | Phase 1 | Pending (user action required) |
 | BUILD-01 | Phase 2 | Pending |
 | BUILD-02 | Phase 2 | Pending |
 | BUILD-03 | Phase 2 | Pending |
@@ -61,4 +61,4 @@
 
 ---
 *Requirements defined: 2026-03-28*
-*Last updated: 2026-03-28 after initial definition*
+*Last updated: 2026-03-29 after plan 01-02 (CATALOG-02, 03, 04 complete)*
