@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_plan: 3 of 3
+current_plan: 3 of 3 (complete)
 status: in_progress
-last_updated: "2026-03-29T01:27:49.918Z"
+last_updated: "2026-03-29T01:40:37.851Z"
 progress:
   total_phases: 2
   completed_phases: 1
@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 
 ## Current Status
 
-**Active phase:** Phase 1: Catalog Automation (complete — all 3 plans done; checkpoint pending for DOCS_DISPATCH_TOKEN)
+**Active phase:** Phase 1: Catalog Automation (complete — all 3 plans done, DOCS_DISPATCH_TOKEN configured, workflows tested)
 **Current Plan:** 3 of 3 (complete)
-**Next action:** User creates DOCS_DISPATCH_TOKEN (Task 3 checkpoint), then proceed to Phase 2
+**Next action:** Resolve GitHub billing/spending limit, then proceed to Phase 2 (End-to-End Build Verification)
 
 ## Phase History
 
@@ -45,6 +45,7 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 - **01-02**: DOCS_DISPATCH_TOKEN PAT setup instructions in notify-docs.yml as comment block — co-located with the workflow that requires it
 - [Phase 01-catalog-automation]: PR template format: checkboxes with one-line inline examples — no full YAML block (per D-02)
 - [Phase 01-catalog-automation]: Checklist covers exactly the three lint rules: name:, description:, backend-slug key, plus configs/{category}/ directory placement
+- [Phase 01-catalog-automation]: workflow_dispatch added to generate-index.yml for manual trigger capability during testing
 
 ## Performance Metrics
 
@@ -57,12 +58,14 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 ## Key Context
 
 - **Catalog repo location**: `/home/diaz/mygit/argus-mcp-catalog/`
-- **DOCS_DISPATCH_TOKEN**: Must be manually created by user as fine-grained PAT (actions:write on argus-mcp-docs) and stored in argus-mcp-catalog repo secrets — cannot be automated
+- **DOCS_DISPATCH_TOKEN**: Configured — fine-grained PAT (actions:write on argus-mcp-docs) stored as secret in argus-mcp-catalog
 - **CATALOG_READ_TOKEN**: Already configured in argus-mcp-docs repo secrets for CI; needed locally for build verification
+- **GitHub billing**: Spending limit blocking Actions workflow execution — must resolve before Phase 2 end-to-end testing
 - **Research**: Available in `.planning/research/` — STACK.md, FEATURES.md, ARCHITECTURE.md, PITFALLS.md
 - **generate-index.js**: Committed to argus-mcp-catalog@f829868 — wired to CI in plan 01-02
-- **generate-index.yml + notify-docs.yml**: Committed to argus-mcp-catalog@7193112 — automation loop fully wired; pending DOCS_DISPATCH_TOKEN secret from user
+- **generate-index.yml + notify-docs.yml**: Committed to argus-mcp-catalog@7193112 — automation loop fully wired; workflow_dispatch added at 70794e3
 - **pull_request_template.md**: Committed to argus-mcp-catalog@4a7fe37 and pushed to origin/main — all Phase 1 files live on remote
+- **Workflow test**: Run 23698777042 confirmed chain logic correct — Notify Docs Rebuild skipped (correctly) when Generate Catalog Index failed
 
 ---
-*Last session: 2026-03-28 — Stopped at: Completed 01-03-PLAN.md (checkpoint:human-verify pending — user must create DOCS_DISPATCH_TOKEN)*
+*Last session: 2026-03-29 — Stopped at: Completed 01-03-PLAN.md — Phase 1 complete, blocked on GitHub billing before Phase 2*
