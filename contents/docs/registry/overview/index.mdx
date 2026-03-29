@@ -132,6 +132,7 @@ registries:
 |-------|------|---------|-------------|
 | `name` | string | **required** | Friendly label (e.g. `"community"`, `"internal"`) |
 | `url` | string | **required** | Base URL of the registry API |
+| `type` | `"auto"` \| `"glama"` \| `"smithery"` \| `"generic"` | `"auto"` | Registry backend type. `"auto"` detects from URL; set explicitly if auto-detect picks wrong type. |
 | `priority` | int | `100` | Lower number = checked first |
 | `auth` | `"none"` \| `"api-key"` \| `"bearer"` | `"none"` | Authentication type |
 | `api_key_env` | string | -- | Environment variable for API key (when `auth: api-key`) |
@@ -193,6 +194,54 @@ backends:
     command: uvx mcp-github
     args: []
 ```
+
+## Management API Search
+
+Argus exposes a server-side search endpoint through the management API that proxies queries to your configured registries. This is distinct from the external registry's own API.
+
+### GET /manage/v1/registry/search
+
+**Endpoint:** `GET /manage/v1/registry/search`
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `q` | string | **yes** | Search query string |
+| `limit` | int | no | Max results (1–100, default 20) |
+| `registry` | string | no | Filter to a named registry only |
+
+**Behavior:** Searches configured registries in priority order, stopping at the first registry that returns results.
+
+**Example:**
+
+```bash
+curl "http://localhost:9000/manage/v1/registry/search?q=github&limit=5"
+```
+
+**Response:**
+
+```json
+{
+  "servers": [
+    {
+      "name": "mcp-github",
+      "description": "GitHub MCP server",
+      "transport": "stdio",
+      "command": "uvx mcp-github",
+      "version": "1.0.0"
+    }
+  ],
+  "registry": "community",
+  "total": 1
+}
+```
+
+**Error responses:**
+
+| Status | Code | Meaning |
+|--------|------|---------|
+| 400 | `bad_request` | Missing or invalid `q` parameter |
+| 404 | `not_configured` | No registries configured |
+| 404 | `not_found` | Named registry not found |
 
 ## Cache
 
