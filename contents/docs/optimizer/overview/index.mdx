@@ -82,9 +82,9 @@ optimizer:
 | `enabled` | bool | `false` | Master switch for the optimizer. **High-risk, opt-in, default off.** |
 | `keep_tools` | list of strings | `[]` | Tool names to always expose alongside meta-tools |
 
-<Callout type="warning">
+<Note type="warning">
 The optimizer is a **high-risk feature flag** that is **off by default** and requires explicit opt-in. Enable it only when the LLM context cost of sending the full tool catalog is prohibitive (typically 100+ tools). For small catalogs, the overhead of find_tool/call_tool round-trips is not worth it.
-</Callout>
+</Note>
 
 ### When to Enable
 
