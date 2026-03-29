@@ -17,12 +17,11 @@ Open [http://localhost:3000/argus-mcp-docs](http://localhost:3000/argus-mcp-docs
 
 ```bash
 sh .husky/post-process.sh   # generate search data
-pnpm run build               # static export to out/
+pnpm run build              # static export to out/
 ```
 
 ## Architecture
 
-- **Template:** [rubix-documents](https://github.com/rubixvi/rubix-documents) (Next.js 16 + MDX)
 - **Hosting:** GitHub Pages via artifact deploy (no `gh-pages` branch)
 - **Catalog:** Build-time fetch from [argus-mcp-catalog](https://github.com/diaz3618/argus-mcp-catalog) using `@octokit/rest`
 - **Content:** MDX files in `contents/docs/`, nav tree in `settings/documents.ts`
