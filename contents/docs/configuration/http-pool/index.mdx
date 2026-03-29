@@ -1,0 +1,31 @@
+---
+title: "HTTP Pool"
+description: "Configure the shared HTTP connection pool used for backend HTTP traffic, registry calls, and the management API."
+---
+
+The `http_pool` section controls a single shared `httpx.AsyncClient` that handles all outgoing HTTP traffic — SSE backends, streamable-http backends, registry fetches, and management API requests. Sharing one pool avoids per-backend connection overhead and keeps total file-descriptor usage predictable.
+
+```yaml
+http_pool:
+  enabled: true
+  max_connections: 200
+  max_keepalive: 100
+  timeout: 30
+```
+
+A conservative example for resource-constrained environments:
+
+```yaml
+http_pool:
+  enabled: true
+  max_connections: 50
+  max_keepalive: 20
+  timeout: 15
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `enabled` | bool | `true` | Enable shared HTTP connection pooling. When disabled, each request may open its own connection. |
+| `max_connections` | int | `200` | Maximum total simultaneous connections across all backends. Range: 1–2000. |
+| `max_keepalive` | int | `100` | Maximum idle keep-alive connections retained in the pool. Range: 0–2000. Set to `0` to disable keep-alive. |
+| `timeout` | float | `30.0` | Default request timeout in seconds applied to all HTTP requests unless overridden per-backend. Range: 1–300. |
