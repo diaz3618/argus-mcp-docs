@@ -1,0 +1,37 @@
+---
+title: "SSE Resilience"
+description: "Configure cleanup deadlines, send timeouts, keepalive intervals, and spin-loop detection for SSE transport connections."
+---
+
+The `sse_resilience` section governs fault-tolerance behaviors for SSE (Server-Sent Events) connections. It sets bounds on how long a single frame send may take, how quickly sessions are cleaned up after disconnect, how often keepalive pings are sent, and guards against misbehaving clients that flood the SSE write path (spin-loop detection).
+
+```yaml
+sse_resilience:
+  enabled: true
+  send_timeout: 30
+  cleanup_deadline: 15
+  keepalive_interval: 30
+  spin_loop_window: 1.0
+  spin_loop_threshold: 200
+```
+
+An example tuned for slower clients and longer-lived connections:
+
+```yaml
+sse_resilience:
+  enabled: true
+  send_timeout: 60
+  cleanup_deadline: 30
+  keepalive_interval: 60
+  spin_loop_window: 2.0
+  spin_loop_threshold: 500
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `enabled` | bool | `true` | Enable SSE stream resilience guards. When disabled, no send timeouts, cleanup deadlines, keepalives, or spin-loop detection are applied. |
+| `send_timeout` | float | `30.0` | Max seconds to push a single SSE frame before the send is aborted and the connection is torn down. Range: 1–300. |
+| `cleanup_deadline` | float | `15.0` | Max seconds allowed for post-disconnect session cleanup. Prevents hung cleanup tasks from blocking worker slots. Range: 1–120. |
+| `keepalive_interval` | float | `30.0` | Seconds between keepalive pings sent to the client. Set to `0` to disable keepalive pings. Range: 0–600. |
+| `spin_loop_window` | float | `1.0` | Sliding window in seconds used to count SSE write calls for spin-loop detection. Range: 0.1–30. |
+| `spin_loop_threshold` | int | `200` | Maximum write calls within `spin_loop_window` before a spin-loop warning is logged. Guards against misbehaving clients flooding the write path. Range: 10–10000. |

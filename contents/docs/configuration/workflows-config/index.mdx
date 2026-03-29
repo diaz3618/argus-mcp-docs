@@ -1,0 +1,27 @@
+---
+title: "Workflows Configuration"
+description: "Configure workflows discovery — the directory where workflow YAML files are stored and whether discovery is enabled."
+---
+
+The `workflows` section controls where Argus looks for workflow YAML files and whether workflow discovery is active. Workflows are YAML-defined automation sequences that are discovered at startup from the configured directory.
+
+See [Workflows](/docs/workflows/overview) for the full workflows guide including how to author and run workflows.
+
+```yaml
+workflows:
+  directory: workflows
+  enabled: true
+```
+
+A customized example using a project-specific path:
+
+```yaml
+workflows:
+  directory: /opt/argus/workflows
+  enabled: true
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `directory` | string | `"workflows"` | Directory where workflow YAML files are stored. Relative paths are resolved from the config file location. |
+| `enabled` | bool | `true` | Enable workflow discovery. When `false`, the workflows directory is not scanned and no workflows are loaded at startup. |
