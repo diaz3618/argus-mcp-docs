@@ -113,6 +113,16 @@ None - all three overviews now document implemented features from source.
 - All three overviews are at full reference depth
 - Registry, Optimizer, and TUI docs are accurate to source as of this writing
 
+## Self-Check: PASSED
+
+- FOUND: contents/docs/optimizer/overview/index.mdx (169 lines)
+- FOUND: contents/docs/registry/overview/index.mdx (292 lines)
+- FOUND: contents/docs/tui/overview/index.mdx (400 lines)
+- FOUND: .planning/phases/04-documentation-accuracy/04-05-SUMMARY.md
+- FOUND: e8148f9 (Task 1 commit)
+- FOUND: e8298b0 (Task 2 commit)
+- FOUND: 60faddb (metadata commit)
+
 ---
 *Phase: 04-documentation-accuracy*
 *Completed: 2026-03-29*
