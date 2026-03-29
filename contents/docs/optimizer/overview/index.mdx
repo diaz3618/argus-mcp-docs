@@ -79,8 +79,22 @@ optimizer:
 
 | Field | Type | Default | Description |
 |---|---|---|---|
-| `enabled` | bool | `false` | Master switch for the optimizer |
+| `enabled` | bool | `false` | Master switch for the optimizer. **High-risk, opt-in, default off.** |
 | `keep_tools` | list of strings | `[]` | Tool names to always expose alongside meta-tools |
+
+<Callout type="warning">
+The optimizer is a **high-risk feature flag** that is **off by default** and requires explicit opt-in. Enable it only when the LLM context cost of sending the full tool catalog is prohibitive (typically 100+ tools). For small catalogs, the overhead of find_tool/call_tool round-trips is not worth it.
+</Callout>
+
+### When to Enable
+
+Enable the optimizer when:
+
+- Your Argus instance aggregates **100 or more tools** across backends
+- LLM context cost for tool schemas is high (long prompts = slower, more expensive inference)
+- The LLM is making poor tool selections due to too many choices
+
+Do **not** enable for small catalogs. The two-step find/call pattern adds latency and the meta-tool schemas themselves consume tokens.
 
 The `keep_tools` list is for tools the LLM must always have access to without needing to search first (e.g., a conversation tool, a help tool).
 
