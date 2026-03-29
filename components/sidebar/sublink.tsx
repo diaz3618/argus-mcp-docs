@@ -14,7 +14,8 @@ function isRoute(item: Paths): item is Extract<Paths, { title: string; href: str
 
 export default function SubLink(props: Paths & { level: number; isSheet: boolean }) {
   const path = usePathname()
-  const [isOpen, setIsOpen] = useState(true)
+  const isGettingStarted = isRoute(props) && props.href === '/docs/getting-started'
+  const [isOpen, setIsOpen] = useState(isGettingStarted)
 
   useEffect(() => {
     if (isRoute(props) && props.href && path !== props.href && path.includes(props.href)) {
