@@ -85,7 +85,7 @@ Plans:
 - [x] 04-03-PLAN.md — Create 7 new config sub-pages: session-pool, http-pool, retry, sse-resilience, plugins-config, skills-config, workflows-config
 - [x] 04-04-PLAN.md — Expand Skills and Workflows overviews to full reference depth (manifest.json reference, DAG step field reference)
 - [x] 04-05-PLAN.md — Expand Optimizer, Registry, and TUI overviews to full reference depth (meta-tool schemas, registries config, TUI screens/keybindings)
-- [ ] 04-06-PLAN.md — Wire 7 new config sub-pages into settings/documents.ts navigation (depends on 04-03)
+- [x] 04-06-PLAN.md — Wire 7 new config sub-pages into settings/documents.ts navigation (depends on 04-03)
 
 ## Progress
 

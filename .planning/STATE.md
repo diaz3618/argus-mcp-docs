@@ -4,12 +4,12 @@ milestone: v1.0
 milestone_name: milestone
 current_plan: 1
 status: Executing Phase 04
-last_updated: "2026-03-29T15:23:41.096Z"
+last_updated: "2026-03-29T15:27:52.210Z"
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 11
-  completed_plans: 10
+  completed_plans: 11
 ---
 
 # Project State
@@ -58,6 +58,7 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 - [Phase 04-documentation-accuracy]: Added management API routes (/manage/v1/skills/{name}/enable|disable) to skills lifecycle section — verified in router.py
 - [Phase 04-documentation-accuracy]: Optimizer 'high-risk, opt-in, default off' phrasing mirrors feature_flags description in schema.py
 - [Phase 04-documentation-accuracy]: Management API search endpoint documented as distinct from external registry API to avoid confusion
+- [Phase 04-documentation-accuracy]: 04-06: 7 new config nav items appended after Secrets Management in Configuration items array — href values match directory names exactly
 
 ## Performance Metrics
 
@@ -73,6 +74,7 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 | Phase 04-documentation-accuracy P03 | 6min | 2 tasks | 7 files |
 | Phase 04-documentation-accuracy P04 | 10min | 2 tasks | 2 files |
 | Phase 04-documentation-accuracy P05 | 7min | 2 tasks | 3 files |
+| Phase 04-documentation-accuracy P06 | 3min | 1 tasks | 1 files |
 
 ## Key Context
 
