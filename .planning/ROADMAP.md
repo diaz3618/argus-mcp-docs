@@ -77,7 +77,15 @@ Plans:
   3. No page references features, flags, or field names that don't exist in code
   4. Code is the source of truth — where docs and code conflict, docs are updated to match code
 
-**Plans**: TBD — pending discuss-phase context
+**Plans**: 6 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Verify plugin count (8 builtins confirmed), fix built-in-plugins page; add 3 missing timeout fields (startup, retries, retry_delay) to backends config docs
+- [ ] 04-02-PLAN.md — Add 9 missing API endpoints to endpoints/index.mdx (GET /ready, GET /batch, POST /reauth/{name}, GET /registry/search, GET /skills, skills enable/disable, POST /tools/call, POST /resources/read)
+- [ ] 04-03-PLAN.md — Create 7 new config sub-pages: session-pool, http-pool, retry, sse-resilience, plugins-config, skills-config, workflows-config
+- [ ] 04-04-PLAN.md — Expand Skills and Workflows overviews to full reference depth (manifest.json reference, DAG step field reference)
+- [ ] 04-05-PLAN.md — Expand Optimizer, Registry, and TUI overviews to full reference depth (meta-tool schemas, registries config, TUI screens/keybindings)
+- [ ] 04-06-PLAN.md — Wire 7 new config sub-pages into settings/documents.ts navigation (depends on 04-03)
 
 ## Progress
 
@@ -89,4 +97,4 @@ Phases execute sequentially: 1 → 2 → 3 → 4
 | 1. Catalog Automation | 3/3 | Complete   | 2026-03-29 |
 | 2. End-to-End Build Verification | 0/2 | Not started | — |
 | 3. Frontend UX Improvements | 0/1 | Not started | — |
-| 4. Documentation Accuracy | 0/? | Not started | — |
+| 4. Documentation Accuracy | 0/6 | Not started | — |
