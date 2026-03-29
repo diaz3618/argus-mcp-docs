@@ -80,8 +80,8 @@ Plans:
 **Plans**: 6 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Verify plugin count (8 builtins confirmed), fix built-in-plugins page; add 3 missing timeout fields (startup, retries, retry_delay) to backends config docs
-- [ ] 04-02-PLAN.md — Add 9 missing API endpoints to endpoints/index.mdx (GET /ready, GET /batch, POST /reauth/{name}, GET /registry/search, GET /skills, skills enable/disable, POST /tools/call, POST /resources/read)
+- [x] 04-01-PLAN.md — Verify plugin count (8 builtins confirmed), fix built-in-plugins page; add 3 missing timeout fields (startup, retries, retry_delay) to backends config docs
+- [x] 04-02-PLAN.md — Add 9 missing API endpoints to endpoints/index.mdx (GET /ready, GET /batch, POST /reauth/{name}, GET /registry/search, GET /skills, skills enable/disable, POST /tools/call, POST /resources/read)
 - [ ] 04-03-PLAN.md — Create 7 new config sub-pages: session-pool, http-pool, retry, sse-resilience, plugins-config, skills-config, workflows-config
 - [ ] 04-04-PLAN.md — Expand Skills and Workflows overviews to full reference depth (manifest.json reference, DAG step field reference)
 - [ ] 04-05-PLAN.md — Expand Optimizer, Registry, and TUI overviews to full reference depth (meta-tool schemas, registries config, TUI screens/keybindings)
@@ -97,4 +97,4 @@ Phases execute sequentially: 1 → 2 → 3 → 4
 | 1. Catalog Automation | 3/3 | Complete   | 2026-03-29 |
 | 2. End-to-End Build Verification | 0/2 | Not started | — |
 | 3. Frontend UX Improvements | 1/1 | Complete   | 2026-03-29 |
-| 4. Documentation Accuracy | 0/6 | Not started | — |
+| 4. Documentation Accuracy | 2/6 | In Progress|  |

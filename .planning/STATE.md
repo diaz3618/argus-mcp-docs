@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_plan: 1
-status: Executing Phase 03
-last_updated: "2026-03-29T14:28:45.242Z"
+status: Executing Phase 04
+last_updated: "2026-03-29T15:19:44.268Z"
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 11
-  completed_plans: 5
+  completed_plans: 8
 ---
 
 # Project State
@@ -19,7 +19,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-28)
 
 **Core value:** The docs site always reflects the current state of the catalog — when a YAML config is merged to argus-mcp-catalog, the docs site rebuilds automatically.
-**Current focus:** Phase 03 — Frontend UX Improvements
+**Current focus:** Phase 04 — Documentation Accuracy
 
 ## Current Status
 
@@ -49,6 +49,8 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 - [Phase 03-frontend-ux-improvements]: Prism tokens extended in globals.css: .class-name (blue), .operator (gray), .variable/.atrule (pink), .important (amber), .null-keyword/.null.token (gray) — all with dark variants
 - [Phase 03-frontend-ux-improvements]: Sidebar default-collapsed via useState(isGettingStarted); Getting Started identified by href==='/docs/getting-started' (pagemenu.tsx prepends /docs)
 - [Phase Phase 03-frontend-ux-improvements]: Gap closure plan 03-02: FE-01 and FE-02 registered in REQUIREMENTS.md — administrative fix, no code changes needed since implementations were already complete
+- [Phase 04-documentation-accuracy]: GET /batch documented with note that sub-object schemas match individual endpoints, not duplicated inline
+- [Phase 04-documentation-accuracy]: All response field names verified against schemas.py Pydantic models — no invented fields used in endpoint docs
 
 ## Performance Metrics
 
@@ -59,6 +61,8 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 | Phase 01-catalog-automation P03 | 5min | 2 tasks | 1 files |
 | Phase 03-frontend-ux-improvements P01 | 8min | 2 tasks | 2 files |
 | Phase 03-frontend-ux-improvements P02 | 2min | 1 tasks | 1 files |
+| Phase 04-documentation-accuracy P02 | 2min | 2 tasks | 1 files |
+| Phase 04-documentation-accuracy P01 | 2min | 2 tasks | 2 files |
 
 ## Key Context
 
