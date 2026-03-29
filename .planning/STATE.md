@@ -2,13 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
+current_plan: 3 of 3
 status: in_progress
-last_updated: "2026-03-29T01:23:29Z"
+last_updated: "2026-03-29T01:27:49.918Z"
 progress:
   total_phases: 2
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 2
+  completed_plans: 3
 ---
 
 # Project State
@@ -22,15 +23,15 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 
 ## Current Status
 
-**Active phase:** Phase 1: Catalog Automation (in progress — Plan 2 of 3 complete)
-**Current Plan:** 3 of 3
-**Next action:** Execute plan 01-03 (PR template for argus-mcp-catalog contributors)
+**Active phase:** Phase 1: Catalog Automation (complete — all 3 plans done; checkpoint pending for DOCS_DISPATCH_TOKEN)
+**Current Plan:** 3 of 3 (complete)
+**Next action:** User creates DOCS_DISPATCH_TOKEN (Task 3 checkpoint), then proceed to Phase 2
 
 ## Phase History
 
 | Phase | Status | Completed |
 |-------|--------|-----------|
-| 1. Catalog Automation | In Progress | — |
+| 1. Catalog Automation | Complete | 2026-03-28 |
 | 2. End-to-End Build Verification | Not started | — |
 
 ## Decisions
@@ -42,6 +43,8 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 - **01-02**: cancel-in-progress: false on concurrency group — queues second run so it sees both merges' configs, not just the latest
 - **01-02**: permissions: contents: write at job level, not workflow level — scoped to the generation job only
 - **01-02**: DOCS_DISPATCH_TOKEN PAT setup instructions in notify-docs.yml as comment block — co-located with the workflow that requires it
+- [Phase 01-catalog-automation]: PR template format: checkboxes with one-line inline examples — no full YAML block (per D-02)
+- [Phase 01-catalog-automation]: Checklist covers exactly the three lint rules: name:, description:, backend-slug key, plus configs/{category}/ directory placement
 
 ## Performance Metrics
 
@@ -49,6 +52,7 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 |-------|------|----------|-------|-------|
 | 01-catalog-automation | 01 | 5min | 1 | 2 |
 | 01-catalog-automation | 02 | 1min | 2 | 2 |
+| Phase 01-catalog-automation P03 | 5min | 2 tasks | 1 files |
 
 ## Key Context
 
@@ -58,6 +62,7 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 - **Research**: Available in `.planning/research/` — STACK.md, FEATURES.md, ARCHITECTURE.md, PITFALLS.md
 - **generate-index.js**: Committed to argus-mcp-catalog@f829868 — wired to CI in plan 01-02
 - **generate-index.yml + notify-docs.yml**: Committed to argus-mcp-catalog@7193112 — automation loop fully wired; pending DOCS_DISPATCH_TOKEN secret from user
+- **pull_request_template.md**: Committed to argus-mcp-catalog@4a7fe37 and pushed to origin/main — all Phase 1 files live on remote
 
 ---
-*Last session: 2026-03-29 — Stopped at: Completed 01-02-PLAN.md*
+*Last session: 2026-03-28 — Stopped at: Completed 01-03-PLAN.md (checkpoint:human-verify pending — user must create DOCS_DISPATCH_TOKEN)*

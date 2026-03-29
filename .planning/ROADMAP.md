@@ -8,7 +8,7 @@ Both phases touch different repos: Phase 1 is entirely in `argus-mcp-catalog`, P
 
 ## Phases
 
-- [ ] **Phase 1: Catalog Automation** — `generate-index.yml`, `notify-docs.yml`, `DOCS_DISPATCH_TOKEN`, and PR template wired into `argus-mcp-catalog`
+- [x] **Phase 1: Catalog Automation** — `generate-index.yml`, `notify-docs.yml`, `DOCS_DISPATCH_TOKEN`, and PR template wired into `argus-mcp-catalog` (completed 2026-03-29)
 - [ ] **Phase 2: End-to-End Build Verification** — Local build with real token confirms all 10 YAML Cookbook pages render with catalog data; any issues found and fixed
 
 ## Phase Details
@@ -30,7 +30,7 @@ Both phases touch different repos: Phase 1 is entirely in `argus-mcp-catalog`, P
 Plans:
 - [x] 01-01-PLAN.md — Write `scripts/generate-index.js` (pure Node.js, no deps) and verify it produces correct `catalog.json` locally
 - [x] 01-02-PLAN.md — Write `generate-index.yml` (path filter, GITHUB_TOKEN, concurrency, auto-commit) and `notify-docs.yml` (workflow_run chain, gh dispatch)
-- [ ] 01-03-PLAN.md — Write `.github/pull_request_template.md`; document `DOCS_DISPATCH_TOKEN` setup instructions; push all changes to `argus-mcp-catalog`
+- [x] 01-03-PLAN.md — Write `.github/pull_request_template.md`; document `DOCS_DISPATCH_TOKEN` setup instructions; push all changes to `argus-mcp-catalog`
 
 ### Phase 2: End-to-End Build Verification
 **Goal**: `pnpm build` on `argus-mcp-docs` succeeds with real catalog data and the `out/` directory contains all 10 YAML Cookbook category pages with actual YAML content
@@ -57,5 +57,5 @@ Phases execute sequentially: 1 → 2
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Catalog Automation | 2/3 | In Progress|  |
+| 1. Catalog Automation | 3/3 | Complete   | 2026-03-29 |
 | 2. End-to-End Build Verification | 0/2 | Not started | — |

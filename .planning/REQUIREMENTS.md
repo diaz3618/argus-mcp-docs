@@ -21,7 +21,7 @@
 
 ### Contributor Workflow (argus-mcp-catalog repo)
 
-- [ ] **CONTRIB-01**: `.github/pull_request_template.md` guides contributors on required YAML fields and category placement
+- [x] **CONTRIB-01**: `.github/pull_request_template.md` guides contributors on required YAML fields and category placement
 
 ## v2 Requirements
 
@@ -52,7 +52,7 @@
 | BUILD-01 | Phase 2 | Pending |
 | BUILD-02 | Phase 2 | Pending |
 | BUILD-03 | Phase 2 | Pending |
-| CONTRIB-01 | Phase 1 | Pending |
+| CONTRIB-01 | Phase 1 | Complete |
 
 **Coverage:**
 - v1 requirements: 9 total
