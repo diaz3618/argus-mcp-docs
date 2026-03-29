@@ -63,13 +63,27 @@ Plans:
 
 **Plans**: TBD — pending discuss-phase context
 
+### Phase 4: Documentation Accuracy
+**Goal**: Every page in the argus-mcp-docs site accurately reflects the argus-mcp codebase — wrong information corrected, missing documented features added, and gaps in API/config reference filled
+**Repo**: `argus-mcp-docs` (current repo), cross-referencing `argus-mcp` at `/home/diaz/mygit/argus-mcp/`
+**Depends on**: Phase 3
+**Requirements**: DOC-01, DOC-02, DOC-03
+**Success Criteria**:
+  1. All documented facts (command flags, config fields, API endpoints, plugin lists) match the actual codebase
+  2. Undocumented API endpoints and config sections addressed per phase decisions
+  3. No page references features, flags, or field names that don't exist in code
+  4. Code is the source of truth — where docs and code conflict, docs are updated to match code
+
+**Plans**: TBD — pending discuss-phase context
+
 ## Progress
 
 **Execution Order:**
-Phases execute sequentially: 1 → 2 → 3
+Phases execute sequentially: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Catalog Automation | 3/3 | Complete   | 2026-03-29 |
 | 2. End-to-End Build Verification | 0/2 | Not started | — |
 | 3. Frontend UX Improvements | 0/? | Not started | — |
+| 4. Documentation Accuracy | 0/? | Not started | — |
