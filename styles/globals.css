@@ -167,6 +167,10 @@ pre > code {
   padding: 14px 0 !important;
 }
 
+pre[class*='language-'] > code {
+  padding: 14px 16px !important;
+}
+
 .contains-task-list {
   list-style-type: none;
   padding-inline-start: 0;
