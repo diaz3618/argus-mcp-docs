@@ -84,6 +84,7 @@ export default async function CategoryPage({ params }: PageProps) {
                 <pre className="language-yaml">
                   <code
                     className="language-yaml"
+                    style={{ display: 'block' }}
                     {...(() => {
                       try {
                         const grammar = Prism.languages.yaml
