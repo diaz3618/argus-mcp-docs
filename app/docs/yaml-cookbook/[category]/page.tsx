@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { Separator } from '@/components/ui/separator'
 import { Typography } from '@/components/ui/typography'
+import Copy from '@/components/markdown/copy'
 import {
   fetchCatalogIndex,
   fetchCategoryConfigs,
@@ -81,25 +82,30 @@ export default async function CategoryPage({ params }: PageProps) {
                     {entry.metadata.description}
                   </p>
                 )}
-                <pre className="language-yaml">
-                  <code
-                    className="language-yaml"
-                    style={{ display: 'block' }}
-                    {...(() => {
-                      try {
-                        const grammar = Prism.languages.yaml
-                        if (!grammar) return { children: entry.content }
-                        return {
-                          dangerouslySetInnerHTML: {
-                            __html: Prism.highlight(entry.content, grammar, 'yaml'),
-                          },
+                <div className="relative">
+                  <div className="absolute top-3 right-2.5 z-10 hidden sm:block">
+                    <Copy content={entry.content} />
+                  </div>
+                  <pre className="language-yaml">
+                    <code
+                      className="language-yaml"
+                      style={{ display: 'block', padding: '14px 16px' }}
+                      {...(() => {
+                        try {
+                          const grammar = Prism.languages.yaml
+                          if (!grammar) return { children: entry.content }
+                          return {
+                            dangerouslySetInnerHTML: {
+                              __html: Prism.highlight(entry.content, grammar, 'yaml'),
+                            },
+                          }
+                        } catch {
+                          return { children: entry.content }
                         }
-                      } catch {
-                        return { children: entry.content }
-                      }
-                    })()}
-                  />
-                </pre>
+                      })()}
+                    />
+                  </pre>
+                </div>
               </div>
             ))
           )}
