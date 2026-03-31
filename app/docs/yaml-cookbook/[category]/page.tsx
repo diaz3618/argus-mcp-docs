@@ -5,6 +5,9 @@ import {
   fetchCatalogIndex,
   fetchCategoryConfigs,
 } from '@/lib/catalog'
+import Prism from 'prismjs'
+import 'prismjs/components/prism-yaml'
+import 'prismjs/themes/prism-tomorrow.css'
 
 interface PageProps {
   params: Promise<{ category: string }>
@@ -79,7 +82,22 @@ export default async function CategoryPage({ params }: PageProps) {
                   </p>
                 )}
                 <pre className="language-yaml">
-                  <code className="language-yaml">{entry.content}</code>
+                  <code
+                    className="language-yaml"
+                    {...(() => {
+                      try {
+                        const grammar = Prism.languages.yaml
+                        if (!grammar) return { children: entry.content }
+                        return {
+                          dangerouslySetInnerHTML: {
+                            __html: Prism.highlight(entry.content, grammar, 'yaml'),
+                          },
+                        }
+                      } catch {
+                        return { children: entry.content }
+                      }
+                    })()}
+                  />
                 </pre>
               </div>
             ))
