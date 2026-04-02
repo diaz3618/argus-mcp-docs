@@ -181,8 +181,8 @@ For MCP servers published only on GitHub — with no npm or PyPI package — Arg
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `source_url` | `string \| null` | `null` | Git repository URL to clone. Must use `https://` or `git+ssh://`. Private/loopback IPs are rejected. |
-| `build_steps` | `List[str]` | `[]` | Commands to run after cloning the repository. Each step is a separate string. **Cannot contain backticks, `$()`, or `()`** — use separate list entries instead of shell chaining. |
-| `entrypoint` | `List[str] \| null` | `null` | Container entrypoint command as a list. Set to the command that starts the MCP server. **Cannot contain shell metacharacters** (`;`, `&`, `|`, backtick, `$`, `(`, `)`, `{`, `}`, `[`, `]`, `<`, `>`, `!`, `#`, `~`, `\`). |
+| `build_steps` | `List[str]` | `[]` | Commands to run after cloning the repository. Each step is a separate string. Cannot contain backtick, `$()`, or `()` — use separate list entries instead of shell chaining. |
+| `entrypoint` | `List[str] \| null` | `null` | Container entrypoint command as a list. Set to the command that starts the MCP server. Cannot contain shell metacharacters: semicolon, ampersand, pipe, backtick, dollar sign, parentheses, braces, brackets, angle brackets, `!`, `#`, `~`, or backslash. |
 | `build_env` | `Dict[str, str]` | `{}` | Environment variables available only during the build stage. Not present in the final runtime image. |
 | `source_ref` | `string \| null` | `null` | Git ref (branch, tag, or commit SHA) to check out. When `null`, clones the default branch. |
 
