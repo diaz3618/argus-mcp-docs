@@ -18,6 +18,7 @@ export interface CatalogEntry {
   filename: string
   content: string
   metadata: Record<string, unknown>
+  category: string
 }
 
 let _indexCache: CatalogIndex | null = null
@@ -40,9 +41,7 @@ export async function fetchCatalogIndex(): Promise<CatalogIndex> {
   }
 }
 
-export async function fetchCategoryConfigs(
-  category: string
-): Promise<CatalogEntry[]> {
+export async function fetchCategoryConfigs(category: string): Promise<CatalogEntry[]> {
   const index = await fetchCatalogIndex()
   const files = index.categories[category] ?? []
   const results = await Promise.allSettled(
@@ -55,11 +54,8 @@ export async function fetchCategoryConfigs(
       const data = res.data as { content: string; encoding: string }
       const content = Buffer.from(data.content, 'base64').toString()
       const metadata =
-        (yaml.load(content, { schema: yaml.JSON_SCHEMA }) as Record<
-          string,
-          unknown
-        >) ?? {}
-      return { filename, content, metadata }
+        (yaml.load(content, { schema: yaml.JSON_SCHEMA }) as Record<string, unknown>) ?? {}
+      return { filename, content, metadata, category }
     })
   )
   for (const r of results) {
@@ -68,9 +64,29 @@ export async function fetchCategoryConfigs(
     }
   }
   return results
-    .filter(
-      (r): r is PromiseFulfilledResult<CatalogEntry> =>
-        r.status === 'fulfilled'
-    )
+    .filter((r): r is PromiseFulfilledResult<CatalogEntry> => r.status === 'fulfilled')
     .map((r) => r.value)
+}
+
+// YAML field reference (verified 2026-04-02 against argus-mcp-catalog configs/):
+// - Transport:  metadata[backendSlug].type  === 'stdio' | 'streamable-http' | 'sse'
+// - Container:  metadata[backendSlug].container?.enabled === true
+// - Auth/env:   metadata[backendSlug].env exists when API key required; absent = no key needed
+// Example slug discovery: Object.keys(metadata).find(k => k !== 'name' && k !== 'description')
+
+export async function fetchAllCatalogEntries(): Promise<{
+  entries: CatalogEntry[]
+  categories: string[]
+  updatedAt: string
+}> {
+  const index = await fetchCatalogIndex()
+  const categories = Object.keys(index.categories)
+  const settled = await Promise.allSettled(categories.map((cat) => fetchCategoryConfigs(cat)))
+  const entries: CatalogEntry[] = []
+  for (const r of settled) {
+    if (r.status === 'fulfilled') {
+      entries.push(...r.value)
+    }
+  }
+  return { entries, categories, updatedAt: index.updated_at }
 }
