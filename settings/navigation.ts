@@ -16,8 +16,7 @@ export const Navigations = [
   },
   {
     title: 'Catalog',
-    href: 'https://github.com/diaz3618/argus-mcp-catalog',
-    external: true,
+    href: '/docs/catalog',
   },
 ]
 
