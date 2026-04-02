@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: — Catalog UX & Maintenance
 current_plan: 4
-status: Executing Phase 09
-last_updated: "2026-04-02T18:49:39.599Z"
+status: Phase 09 Complete
+last_updated: "2026-04-02T18:53:45.979Z"
 progress:
   total_phases: 9
-  completed_phases: 8
+  completed_phases: 9
   total_plans: 30
-  completed_plans: 29
+  completed_plans: 30
 ---
 
 # Project State
@@ -19,13 +19,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-01)
 
 **Core value:** The docs site always reflects the current state of the catalog — when a YAML config is merged to argus-mcp-catalog, the docs site rebuilds and reflects it automatically with no manual intervention.
-**Current focus:** Phase 09 — catalog-browser
+**Current focus:** Phase 09 — catalog-browser (COMPLETE)
 
 ## Current Status
 
-**Active phase:** Phase 09 — Catalog Browser
-**Current Plan:** 4
-**Next action:** Execute plan 09-04
+**Active phase:** Phase 09 — Catalog Browser (Complete)
+**Current Plan:** 4 (final plan — phase complete)
+**Next action:** Phase 09 complete — all 4 plans executed; v1.2 milestone catalog-browser work done
 
 ## Phase History
 
@@ -38,6 +38,8 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 | 5. Catalog Expansion | Complete | 2026-03-29 |
 | 6. YAML Cookbook Syntax Highlighting | Complete | 2026-03-30 |
 | 7. Catalog Polish | Complete | 2026-03-31 |
+| 8. Maintenance & Bug Fixes | Complete | 2026-04-02 |
+| 9. Catalog Browser | Complete | 2026-04-02 |
 
 ## Decisions
 
@@ -98,6 +100,9 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 - [Phase 09-catalog-browser]: 09-02: SearchInput uses useRef for debounced callback to avoid stale closure while preventing re-creation on every render
 - [Phase 09-catalog-browser]: 09-03: categoryLabels map duplicated inline in CatalogBrowser rather than extracted to shared constant — avoids cross-module coupling between catalog components and yaml-cookbook route
 - [Phase 09-catalog-browser]: 09-03: safePage clamp (Math.min(currentPage, totalPages)) prevents stale ?page=N URL from showing empty grid when filters reduce total pages
+- [Phase 09-catalog-browser]: 09-04: Suspense boundary wraps CatalogBrowser — required for useSearchParams in static export; missing it causes build failure
+- [Phase 09-catalog-browser]: 09-04: Catalog page uses static metadata export (not async generateMetadata) — no dynamic params on /docs/catalog route
+- [Phase 09-catalog-browser]: 09-04: navigation.ts Catalog href changed from external github URL to /docs/catalog — external:true removed
 
 ## Performance Metrics
 
@@ -132,6 +137,7 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 | Phase 09-catalog-browser P01 | 2min | 1 tasks | 1 files |
 | Phase 09-catalog-browser P02 | 3min | 2 tasks | 6 files |
 | Phase 09-catalog-browser P03 | 5min | 2 tasks | 2 files |
+| Phase 09-catalog-browser P04 | 2min | 2 tasks | 2 files |
 
 ## Key Context
 
@@ -155,4 +161,4 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 - **[Phase 06-yaml-cookbook-syntax-highlighting]**: Copy button uses existing Copy component wrapped in relative div at absolute top-3 right-2.5 z-10 hidden sm:block — consistent with Pre component pattern in MDX pages
 
 ---
-*Last session: 2026-04-02 — Completed 09-03: CatalogFilterBar + CatalogBrowser orchestrator with URL-encoded filter state; 'use client', router.replace, optional chaining, AND logic, responsive layout; build passes; resume at 09-04*
+*Last session: 2026-04-02 — Completed 09-04: Catalog page route (app/docs/catalog/page.tsx with Suspense boundary) + navigation wiring (/docs/catalog internal route). Phase 09 catalog-browser COMPLETE. pnpm build passes: 65 pages, out/docs/catalog/index.html generated.*
