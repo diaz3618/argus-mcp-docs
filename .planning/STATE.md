@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: — Catalog UX & Maintenance
-current_plan: 2
+current_plan: 4
 status: Executing Phase 09
-last_updated: "2026-04-02T18:45:16.737Z"
+last_updated: "2026-04-02T18:49:39.599Z"
 progress:
   total_phases: 9
   completed_phases: 8
   total_plans: 30
-  completed_plans: 28
+  completed_plans: 29
 ---
 
 # Project State
@@ -24,8 +24,8 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 ## Current Status
 
 **Active phase:** Phase 09 — Catalog Browser
-**Current Plan:** 3
-**Next action:** Execute plan 09-03
+**Current Plan:** 4
+**Next action:** Execute plan 09-04
 
 ## Phase History
 
@@ -96,6 +96,8 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 - [Phase 09-catalog-browser]: fetchAllCatalogEntries() uses Promise.allSettled over categories; YAML field reference comment block co-located above function as D-19 requires
 - [Phase 09-catalog-browser]: 09-02: Used interface instead of type for component props — Biome useConsistentTypeDefinitions rule enforces interface; type kept only for intersections (BadgeProps)
 - [Phase 09-catalog-browser]: 09-02: SearchInput uses useRef for debounced callback to avoid stale closure while preventing re-creation on every render
+- [Phase 09-catalog-browser]: 09-03: categoryLabels map duplicated inline in CatalogBrowser rather than extracted to shared constant — avoids cross-module coupling between catalog components and yaml-cookbook route
+- [Phase 09-catalog-browser]: 09-03: safePage clamp (Math.min(currentPage, totalPages)) prevents stale ?page=N URL from showing empty grid when filters reduce total pages
 
 ## Performance Metrics
 
@@ -129,6 +131,7 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 | Phase 08-maintenance-and-bug-fixes P03 | 37min | 2 tasks | 2 files |
 | Phase 09-catalog-browser P01 | 2min | 1 tasks | 1 files |
 | Phase 09-catalog-browser P02 | 3min | 2 tasks | 6 files |
+| Phase 09-catalog-browser P03 | 5min | 2 tasks | 2 files |
 
 ## Key Context
 
@@ -152,4 +155,4 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 - **[Phase 06-yaml-cookbook-syntax-highlighting]**: Copy button uses existing Copy component wrapped in relative div at absolute top-3 right-2.5 z-10 hidden sm:block — consistent with Pre component pattern in MDX pages
 
 ---
-*Last session: 2026-04-02 — Completed 09-02: Badge, FilterChip, SearchInput, CatalogEntryCard, CatalogPagination, CatalogGrid leaf components; build passes; resume at 09-03*
+*Last session: 2026-04-02 — Completed 09-03: CatalogFilterBar + CatalogBrowser orchestrator with URL-encoded filter state; 'use client', router.replace, optional chaining, AND logic, responsive layout; build passes; resume at 09-04*

@@ -41,7 +41,7 @@ Archive: `.planning/milestones/v1.1-ROADMAP.md`
 - [ ] **Phase 9: Catalog Browser** (0/4 plans)
   - [x] 09-01-PLAN.md — Extend lib/catalog.ts with fetchAllCatalogEntries(); verify YAML field names (CAT-13)
   - [x] 09-02-PLAN.md — Build leaf components: Badge, FilterChip, SearchInput, CatalogEntryCard, CatalogPagination, CatalogGrid (CAT-02, CAT-04–CAT-09)
-  - [ ] 09-03-PLAN.md — Build CatalogFilterBar and CatalogBrowser with URL-encoded filter state (CAT-03, CAT-04–CAT-07, CAT-10)
+  - [x] 09-03-PLAN.md — Build CatalogFilterBar and CatalogBrowser with URL-encoded filter state (CAT-03, CAT-04–CAT-07, CAT-10)
   - [ ] 09-04-PLAN.md — Create app/docs/catalog/page.tsx with Suspense boundary; wire navigation.ts (CAT-01, CAT-11, CAT-12)
 
 Details: `.planning/milestones/v1.2-ROADMAP.md`
