@@ -40,7 +40,7 @@ Archive: `.planning/milestones/v1.1-ROADMAP.md`
   - [x] 08-03-PLAN.md — Diagnose and fix container-isolation 404; regenerate search index (BUG-01, BUG-02)
 - [ ] **Phase 9: Catalog Browser** (0/4 plans)
   - [x] 09-01-PLAN.md — Extend lib/catalog.ts with fetchAllCatalogEntries(); verify YAML field names (CAT-13)
-  - [ ] 09-02-PLAN.md — Build leaf components: Badge, FilterChip, SearchInput, CatalogEntryCard, CatalogPagination, CatalogGrid (CAT-02, CAT-04–CAT-09)
+  - [x] 09-02-PLAN.md — Build leaf components: Badge, FilterChip, SearchInput, CatalogEntryCard, CatalogPagination, CatalogGrid (CAT-02, CAT-04–CAT-09)
   - [ ] 09-03-PLAN.md — Build CatalogFilterBar and CatalogBrowser with URL-encoded filter state (CAT-03, CAT-04–CAT-07, CAT-10)
   - [ ] 09-04-PLAN.md — Create app/docs/catalog/page.tsx with Suspense boundary; wire navigation.ts (CAT-01, CAT-11, CAT-12)
 
@@ -60,4 +60,4 @@ Details: `.planning/milestones/v1.2-ROADMAP.md`
 | 6. YAML Cookbook Syntax Highlighting | v1.1 | 1/1 | Complete | 2026-03-30 |
 | 7. Catalog Polish | v1.1 | 3/3 | Complete | 2026-03-31 |
 | 8. Maintenance & Bug Fixes | v1.2 | 3/3 | Complete   | 2026-04-02 |
-| 9. Catalog Browser | v1.2 | 1/4 | In Progress|  |
+| 9. Catalog Browser | v1.2 | 2/4 | In Progress|  |

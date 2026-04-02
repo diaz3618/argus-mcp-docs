@@ -4,12 +4,12 @@ milestone: v1.2
 milestone_name: — Catalog UX & Maintenance
 current_plan: 2
 status: Executing Phase 09
-last_updated: "2026-04-02T18:39:10.210Z"
+last_updated: "2026-04-02T18:45:16.737Z"
 progress:
   total_phases: 9
   completed_phases: 8
   total_plans: 30
-  completed_plans: 27
+  completed_plans: 28
 ---
 
 # Project State
@@ -24,8 +24,8 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 ## Current Status
 
 **Active phase:** Phase 09 — Catalog Browser
-**Current Plan:** 2
-**Next action:** Execute plan 09-02
+**Current Plan:** 3
+**Next action:** Execute plan 09-03
 
 ## Phase History
 
@@ -94,6 +94,8 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 - [Phase 08-maintenance-and-bug-fixes]: 08-03: MDX-unsafe bold+backtick and angle-bracket patterns in GFM table cells cause remarkGfm+compileMDX failure; fix by rewriting descriptions to prose
 - [Phase 08-maintenance-and-bug-fixes]: 08-03: root cause diagnosis: compileMDX+remarkGfm binary search is the correct local reproduction method for build-time MDX compilation errors
 - [Phase 09-catalog-browser]: fetchAllCatalogEntries() uses Promise.allSettled over categories; YAML field reference comment block co-located above function as D-19 requires
+- [Phase 09-catalog-browser]: 09-02: Used interface instead of type for component props — Biome useConsistentTypeDefinitions rule enforces interface; type kept only for intersections (BadgeProps)
+- [Phase 09-catalog-browser]: 09-02: SearchInput uses useRef for debounced callback to avoid stale closure while preventing re-creation on every render
 
 ## Performance Metrics
 
@@ -126,6 +128,7 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 | Phase 08-maintenance-and-bug-fixes P02 | 5min | 2 tasks | 2 files |
 | Phase 08-maintenance-and-bug-fixes P03 | 37min | 2 tasks | 2 files |
 | Phase 09-catalog-browser P01 | 2min | 1 tasks | 1 files |
+| Phase 09-catalog-browser P02 | 3min | 2 tasks | 6 files |
 
 ## Key Context
 
@@ -149,4 +152,4 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 - **[Phase 06-yaml-cookbook-syntax-highlighting]**: Copy button uses existing Copy component wrapped in relative div at absolute top-3 right-2.5 z-10 hidden sm:block — consistent with Pre component pattern in MDX pages
 
 ---
-*Last session: 2026-04-02 — Completed 09-01: fetchAllCatalogEntries() and CatalogEntry.category added to lib/catalog.ts; build passes; resume at 09-02*
+*Last session: 2026-04-02 — Completed 09-02: Badge, FilterChip, SearchInput, CatalogEntryCard, CatalogPagination, CatalogGrid leaf components; build passes; resume at 09-03*
