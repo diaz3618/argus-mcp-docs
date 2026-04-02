@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: — Catalog UX & Maintenance
-current_plan: Not started
-status: Ready to plan
-last_updated: "2026-04-02T17:13:44.785Z"
+current_plan: 2
+status: Executing Phase 09
+last_updated: "2026-04-02T18:39:10.210Z"
 progress:
   total_phases: 9
   completed_phases: 8
-  total_plans: 26
-  completed_plans: 26
+  total_plans: 30
+  completed_plans: 27
 ---
 
 # Project State
@@ -19,13 +19,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-01)
 
 **Core value:** The docs site always reflects the current state of the catalog — when a YAML config is merged to argus-mcp-catalog, the docs site rebuilds and reflects it automatically with no manual intervention.
-**Current focus:** Phase 08 — maintenance-and-bug-fixes
+**Current focus:** Phase 09 — catalog-browser
 
 ## Current Status
 
-**Active phase:** Phase 8 — Maintenance & Bug Fixes
-**Current Plan:** Not started
-**Next action:** Execute plan 08-01
+**Active phase:** Phase 09 — Catalog Browser
+**Current Plan:** 2
+**Next action:** Execute plan 09-02
 
 ## Phase History
 
@@ -93,6 +93,7 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 - [Phase 08-maintenance-and-bug-fixes]: lodash-es HIGH CVE resolved via override to >=4.18.0 — semver-compatible with mermaid's ^4.17.23
 - [Phase 08-maintenance-and-bug-fixes]: 08-03: MDX-unsafe bold+backtick and angle-bracket patterns in GFM table cells cause remarkGfm+compileMDX failure; fix by rewriting descriptions to prose
 - [Phase 08-maintenance-and-bug-fixes]: 08-03: root cause diagnosis: compileMDX+remarkGfm binary search is the correct local reproduction method for build-time MDX compilation errors
+- [Phase 09-catalog-browser]: fetchAllCatalogEntries() uses Promise.allSettled over categories; YAML field reference comment block co-located above function as D-19 requires
 
 ## Performance Metrics
 
@@ -124,6 +125,7 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 | Phase 08-maintenance-and-bug-fixes P01 | 5min | 2 tasks | 2 files |
 | Phase 08-maintenance-and-bug-fixes P02 | 5min | 2 tasks | 2 files |
 | Phase 08-maintenance-and-bug-fixes P03 | 37min | 2 tasks | 2 files |
+| Phase 09-catalog-browser P01 | 2min | 1 tasks | 1 files |
 
 ## Key Context
 
@@ -147,4 +149,4 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 - **[Phase 06-yaml-cookbook-syntax-highlighting]**: Copy button uses existing Copy component wrapped in relative div at absolute top-3 right-2.5 z-10 hidden sm:block — consistent with Pre component pattern in MDX pages
 
 ---
-*Last session: 2026-04-02 — Phase 8 + Phase 9 context gathered; all decisions finalized; resume at .planning/phases/09-catalog-browser/09-CONTEXT.md*
+*Last session: 2026-04-02 — Completed 09-01: fetchAllCatalogEntries() and CatalogEntry.category added to lib/catalog.ts; build passes; resume at 09-02*
