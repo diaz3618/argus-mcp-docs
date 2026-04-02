@@ -1,12 +1,9 @@
 import { notFound } from 'next/navigation'
+import Prism from 'prismjs'
+import Copy from '@/components/markdown/copy'
 import { Separator } from '@/components/ui/separator'
 import { Typography } from '@/components/ui/typography'
-import Copy from '@/components/markdown/copy'
-import {
-  fetchCatalogIndex,
-  fetchCategoryConfigs,
-} from '@/lib/catalog'
-import Prism from 'prismjs'
+import { fetchCatalogIndex, fetchCategoryConfigs } from '@/lib/catalog'
 import 'prismjs/components/prism-yaml'
 import 'prismjs/themes/prism-tomorrow.css'
 
@@ -40,8 +37,7 @@ export default async function CategoryPage({ params }: PageProps) {
       <div className="space-y-4">
         <h1 className="text-3xl font-semibold">{label}</h1>
         <p className="text-sm">
-          Pre-tested Argus MCP backend configurations for {label.toLowerCase()}{' '}
-          servers.
+          Pre-tested Argus MCP backend configurations for {label.toLowerCase()} servers.
         </p>
         <Separator />
       </div>
@@ -49,8 +45,7 @@ export default async function CategoryPage({ params }: PageProps) {
         <section className="space-y-8 pt-6">
           {configs.length === 0 ? (
             <p className="text-muted-foreground">
-              No configurations available for this category yet. Check back soon
-              or{' '}
+              No configurations available for this category yet. Check back soon or{' '}
               <a
                 href="https://github.com/diaz3618/argus-mcp-catalog"
                 target="_blank"
@@ -62,11 +57,14 @@ export default async function CategoryPage({ params }: PageProps) {
             </p>
           ) : (
             configs.map((entry) => (
-              <div key={entry.filename} className="space-y-2">
+              <div
+                key={entry.filename}
+                id={entry.filename.replace('.yaml', '')}
+                className="space-y-2 scroll-mt-20"
+              >
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-medium">
-                    {(entry.metadata.name as string) ||
-                      entry.filename.replace('.yaml', '')}
+                    {(entry.metadata.name as string) || entry.filename.replace('.yaml', '')}
                   </h2>
                   <a
                     href={`https://github.com/diaz3618/argus-mcp-catalog/blob/main/configs/${category}/${entry.filename}`}
@@ -78,9 +76,7 @@ export default async function CategoryPage({ params }: PageProps) {
                   </a>
                 </div>
                 {typeof entry.metadata.description === 'string' && (
-                  <p className="text-sm text-muted-foreground">
-                    {entry.metadata.description}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{entry.metadata.description}</p>
                 )}
                 <div className="relative">
                   <div className="absolute top-3 right-2.5 z-10 hidden sm:block">

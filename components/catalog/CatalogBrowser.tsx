@@ -92,6 +92,19 @@ export default function CatalogBrowser({ entries, categories, updatedAt }: Catal
   const safePage = Math.min(currentPage, totalPages)
   const paginated = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
+  // Derive transport options from data — new transport types in catalog appear automatically
+  const availableTransports = [
+    ...new Set(
+      entries
+        .map((entry) => {
+          const slug = Object.keys(entry.metadata).find((k) => k !== 'name' && k !== 'description')
+          const meta = slug ? (entry.metadata[slug] as Record<string, unknown>) : null
+          return typeof meta?.type === 'string' ? meta.type : null
+        })
+        .filter((t): t is string => t !== null)
+    ),
+  ].sort()
+
   return (
     <div className="flex gap-6">
       {/* Left panel: category sidebar — hidden on mobile */}
@@ -145,6 +158,7 @@ export default function CatalogBrowser({ entries, categories, updatedAt }: Catal
           transport={transport}
           noAuth={noAuth}
           containerOnly={containerOnly}
+          availableTransports={availableTransports}
           onSearch={(val) => updateParams({ q: val })}
           onTransport={(val) => updateParams({ transport: val })}
           onNoAuth={() => updateParams({ noAuth: noAuth ? null : '1' })}

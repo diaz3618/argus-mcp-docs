@@ -38,11 +38,19 @@ function CatalogEntryCard({ entry, categoryLabel }: CatalogEntryCardProps) {
         </Badge>
       </div>
       <Link
-        href={`/docs/yaml-cookbook/${entry.category}/`}
+        href={`/docs/yaml-cookbook/${entry.category}/#${entry.filename.replace('.yaml', '')}`}
         className="text-xs text-primary underline-offset-4 hover:underline mt-auto"
       >
         View YAML
       </Link>
+      <a
+        href={`https://github.com/diaz3618/argus-mcp-catalog/blob/main/configs/${entry.category}/${entry.filename}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-xs text-muted-foreground underline-offset-4 hover:underline"
+      >
+        View in GitHub
+      </a>
     </div>
   )
 }

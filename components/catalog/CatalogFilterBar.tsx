@@ -6,6 +6,7 @@ interface CatalogFilterBarProps {
   transport: string
   noAuth: boolean
   containerOnly: boolean
+  availableTransports: string[]
   onSearch: (q: string) => void
   onTransport: (t: string) => void
   onNoAuth: () => void
@@ -17,6 +18,7 @@ function CatalogFilterBar({
   transport,
   noAuth,
   containerOnly,
+  availableTransports,
   onSearch,
   onTransport,
   onNoAuth,
@@ -27,18 +29,16 @@ function CatalogFilterBar({
       {/* Row 1: Search input */}
       <SearchInput value={query} onSearch={onSearch} />
 
-      {/* Row 2: All 4 filter chips in one row */}
+      {/* Row 2: Filter chips — transport types derived from data, then boolean toggles */}
       <div className="flex flex-wrap gap-2">
-        <FilterChip
-          label="stdio"
-          active={transport === 'stdio'}
-          onClick={() => onTransport(transport === 'stdio' ? '' : 'stdio')}
-        />
-        <FilterChip
-          label="streamable-http"
-          active={transport === 'streamable-http'}
-          onClick={() => onTransport(transport === 'streamable-http' ? '' : 'streamable-http')}
-        />
+        {availableTransports.map((t) => (
+          <FilterChip
+            key={t}
+            label={t}
+            active={transport === t}
+            onClick={() => onTransport(transport === t ? '' : t)}
+          />
+        ))}
         <FilterChip label="No API key" active={noAuth} onClick={onNoAuth} />
         <FilterChip label="Containerized" active={containerOnly} onClick={onContainerOnly} />
       </div>
