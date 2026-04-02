@@ -12,8 +12,17 @@
     "generate-content-json": "tsx scripts/content.ts",
     "prepare": "husky"
   },
+  "pnpm": {
+    "overrides": {
+      "flatted": ">=3.4.2",
+      "picomatch@>=4.0.0": ">=4.0.4",
+      "lodash-es": ">=4.18.0",
+      "brace-expansion@>=4.0.0": ">=5.0.5",
+      "yaml@>=2": ">=2.8.3"
+    }
+  },
   "dependencies": {
-    "@next/third-parties": "^16.1.6",
+    "@next/third-parties": "^16.1.7",
     "@octokit/rest": "^22.0.1",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-collapsible": "^1.1.12",
@@ -30,7 +39,7 @@
     "js-yaml": "^4.1.1",
     "lib": "^5.1.0",
     "mermaid": "^11.13.0",
-    "next": "16.1.6",
+    "next": "16.1.7",
     "next-mdx-remote": "^6.0.0",
     "next-themes": "^0.4.6",
     "prismjs": "^1.30.0",
@@ -68,7 +77,7 @@
     "tailwindcss": "^4.2.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.0"
+    "typescript-eslint": "^8.58.0"
   },
   "engines": {
     "node": "24.x"
