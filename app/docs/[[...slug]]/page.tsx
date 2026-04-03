@@ -35,7 +35,7 @@ export default async function Pages({ params }: PageProps) {
           <Pagination pathname={pathName} />
         </Typography>
       </section>
-      <TableOfContents tocs={{ tocs }} pathName={pathName} frontmatter={frontmatter} />
+      <TableOfContents tocs={{ tocs }} frontmatter={frontmatter} />
     </div>
   )
 }
