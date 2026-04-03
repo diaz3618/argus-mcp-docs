@@ -4,7 +4,7 @@ milestone: v1.2
 milestone_name: — Catalog UX & Maintenance
 current_plan: Not started
 status: Milestone complete
-last_updated: "2026-04-02T18:59:21.332Z"
+last_updated: "2026-04-02T19:30:00.000Z"
 progress:
   total_phases: 9
   completed_phases: 9
@@ -161,4 +161,4 @@ See: .planning/PROJECT.md (updated 2026-04-01)
 - **[Phase 06-yaml-cookbook-syntax-highlighting]**: Copy button uses existing Copy component wrapped in relative div at absolute top-3 right-2.5 z-10 hidden sm:block — consistent with Pre component pattern in MDX pages
 
 ---
-*Last session: 2026-04-02 — Completed 09-04: Catalog page route (app/docs/catalog/page.tsx with Suspense boundary) + navigation wiring (/docs/catalog internal route). Phase 09 catalog-browser COMPLETE. pnpm build passes: 65 pages, out/docs/catalog/index.html generated.*
+*Last session: 2026-04-02 — v1.2 milestone complete. All 17 requirements satisfied (MAINT-01, MAINT-02, BUG-01, BUG-02, CAT-01 through CAT-13). Milestone audit written to .planning/milestones/v1.2-MILESTONE-AUDIT.md. ROADMAP.md updated to show v1.2 SHIPPED.*
