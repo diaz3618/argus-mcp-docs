@@ -5,11 +5,10 @@ import { Settings } from '@/types/settings'
 
 interface TableProps {
   tocs: TableAnchorProps
-  pathName: string
   frontmatter: { title: string }
 }
 
-export function TableOfContents({ tocs, pathName, frontmatter }: TableProps) {
+export function TableOfContents({ tocs, frontmatter }: TableProps) {
   return (
     <>
       {Settings.rightbar && (
@@ -18,7 +17,7 @@ export function TableOfContents({ tocs, pathName, frontmatter }: TableProps) {
           aria-label="Table of contents"
         >
           {Settings.toc && <TableAnchor tocs={tocs.tocs} />}
-          {Settings.feedback && <Feedback slug={pathName} title={frontmatter.title} />}
+          {Settings.feedback && <Feedback title={frontmatter.title} />}
           {Settings.totop && <BackToTop />}
         </aside>
       )}
