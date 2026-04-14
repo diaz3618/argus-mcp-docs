@@ -1,5 +1,5 @@
 export const url = 'https://diaz3618.github.io/argus-mcp-docs'
-export const siteicon = '/icon.png'
+export const siteicon = '/argus-mcp-docs/icon.png'
 
 export const gtm = 'GTM-XXXXXXX'
 export const gtmconnected = false
