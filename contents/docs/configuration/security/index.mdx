@@ -1,0 +1,71 @@
+---
+title: "Security Configuration"
+description: "Configure security hardening middleware for Argus MCP — HTTP response headers, payload limits, origin validation, and trusted proxy settings."
+---
+
+The `security:` block controls hardening middleware applied to all incoming requests. This includes security response headers (HSTS), payload size limits, and origin and proxy trust settings that protect against CSRF, request smuggling, and IP spoofing attacks.
+
+```yaml
+security:
+  headers:
+    enabled: true
+    hsts_max_age: 63072000
+  payload_limits:
+    enabled: true
+    max_body_bytes: 1048576
+    max_json_depth: 20
+  allow_weak_tokens: false
+  require_origin: "strict"
+  trusted_proxies: null
+  redact_status: false
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `security.headers.enabled` | bool | `true` | Enable security response headers middleware (HSTS, X-Frame-Options, etc.) |
+| `security.headers.hsts_max_age` | int | `63072000` | HSTS `max-age` value in seconds (2 years). `0` = disabled. Range: 0, or 300–∞. Values 1–299 are rejected as too short. |
+| `security.payload_limits.enabled` | bool | `true` | Enable payload limits middleware |
+| `security.payload_limits.max_body_bytes` | int | `1048576` | Maximum request body size in bytes (1 MB). Range: 1024–104857600. |
+| `security.payload_limits.max_json_depth` | int | `20` | Maximum JSON nesting depth. Range: 1–100. |
+| `security.allow_weak_tokens` | bool | `false` | Accept management tokens shorter than 16 characters. Disabled by default (SEC-06). |
+| `security.require_origin` | string | `"strict"` | Origin header policy: `"strict"` rejects requests without an `Origin` header; `"permissive"` allows missing Origin. |
+| `security.trusted_proxies` | list\|null | `null` | Trusted proxy IPs/CIDRs for reading `X-Forwarded-For`. When `null`, XFF is ignored entirely. |
+| `security.redact_status` | bool | `false` | Strip sensitive config and transport details from `/status` and `/backends` management API responses (SEC-17). |
+
+## Security Headers
+
+When `security.headers.enabled` is `true`, Argus injects hardening headers into every response:
+
+- `Strict-Transport-Security` (HSTS) — instructs browsers to always use HTTPS
+- `X-Frame-Options: DENY` — prevents clickjacking via iframes
+- `X-Content-Type-Options: nosniff` — prevents MIME-type sniffing
+
+**HSTS note:** The `Strict-Transport-Security` header is only meaningful over TLS. If Argus is serving plain HTTP (e.g., behind a TLS-terminating proxy), set `hsts_max_age: 0` to disable the header at the Argus level and let your reverse proxy manage it.
+
+The `hsts_max_age` validator enforces: `0` (disabled), or `≥ 300` (valid). Values 1–299 are rejected at startup — they are too short to be useful and are likely configuration mistakes.
+
+## Trusted Proxies
+
+By default, `trusted_proxies: null` — Argus ignores the `X-Forwarded-For` header entirely. This is the safest default: without a known proxy list, XFF cannot be trusted and spoofed IPs are never used for rate-limiting or logging.
+
+When running behind a known reverse proxy, configure the proxy's IP or CIDR:
+
+```yaml
+security:
+  trusted_proxies:
+    - "10.0.0.1"
+    - "172.16.0.0/12"
+```
+
+Argus reads XFF only from requests arriving from matching addresses (AUTH-02 protection). Each entry must be a valid IPv4/IPv6 address or CIDR block; invalid entries are rejected at startup.
+
+## Origin Validation
+
+The `require_origin` field controls how Argus handles requests that lack an `Origin` header.
+
+| Value | Behavior |
+|-------|----------|
+| `"strict"` (default) | Requests without an `Origin` header are rejected with HTTP 400. Protects against CSRF from browser clients (SEC-13). |
+| `"permissive"` | Requests without an `Origin` header are allowed. Use for CLI clients, SDKs, or any non-browser client that does not send `Origin`. |
+
+Use `"permissive"` when your MCP clients are non-browser tools (scripts, CLI, SDKs). Use `"strict"` when browser-based clients connect directly and CSRF protection is required.
