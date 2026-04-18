@@ -36,6 +36,8 @@ registries: [ ... ]             # External MCP server catalogs
 incoming_auth: { ... }          # Incoming client authentication
 authorization: { ... }          # RBAC policies
 feature_flags: { ... }          # Feature toggles
+security: { ... }               # Security hardening (headers, payload limits, origin validation)
+rate_limits: { ... }            # Per-IP rate limiting and auth lockout
 ```
 
 ## Variable Expansion

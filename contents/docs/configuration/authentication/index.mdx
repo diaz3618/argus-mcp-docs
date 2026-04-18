@@ -5,6 +5,24 @@ description: "Configure incoming client authentication for Argus MCP with anonym
 
 Argus MCP supports four incoming authentication modes. The mode is set in the `incoming_auth` config section and applies to all MCP client connections.
 
+## Auth Mode
+
+The `auth_mode` field controls how unauthenticated requests are handled globally.
+
+```yaml
+incoming_auth:
+  type: local
+  token: "${ARGUS_AUTH_TOKEN}"
+  auth_mode: "strict"
+```
+
+| Value | Behavior |
+|-------|----------|
+| `"strict"` (default) | Unauthenticated requests are rejected with HTTP 401 before reaching any resource |
+| `"permissive"` | Unauthenticated requests are allowed through; auth is only enforced on individually protected resources |
+
+Use `"permissive"` when some endpoints must remain public (e.g., health checks, anonymous read access) while others require auth.
+
 ## Auth Types
 
 ### anonymous (default)
@@ -71,6 +89,8 @@ incoming_auth:
 ```
 
 This is equivalent to `jwt` mode but automatically constructs the JWKS URI from the issuer URL.
+
+**SSRF protection:** The OIDC discovery request (fetching `/.well-known/openid-configuration`) blocks private IP ranges (RFC 1918: `10.x`, `172.16–31.x`, `192.168.x`) and loopback addresses. Redirects are not followed. This prevents an attacker-controlled issuer URL from probing internal services.
 
 ## Identity Model
 
