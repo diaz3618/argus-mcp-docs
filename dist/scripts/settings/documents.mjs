@@ -43,6 +43,14 @@ export const Documents = [
                 href: '/authentication',
             },
             {
+                title: 'Security',
+                href: '/security',
+            },
+            {
+                title: 'Rate Limits',
+                href: '/rate-limits',
+            },
+            {
                 title: 'Authorization',
                 href: '/authorization',
             },

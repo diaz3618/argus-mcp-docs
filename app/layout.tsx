@@ -1,6 +1,7 @@
 import { GoogleTagManager } from '@next/third-parties/google'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import Script from 'next/script'
 import { Footer } from '@/components/navigation/footer'
 import { Navbar } from '@/components/navigation/navbar'
 import { Providers } from '@/providers'
@@ -61,6 +62,11 @@ export default function RootLayout({
           <main className="h-auto px-5 sm:px-8">{children}</main>
           <Footer />
         </Providers>
+        <Script
+          src="https://ryb.traekr.com/api/script.js"
+          data-site-id="e07e82e8bbb3"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   )
